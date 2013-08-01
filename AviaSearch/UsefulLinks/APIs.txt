@@ -1,0 +1,71 @@
+http://ru.flightaware.com/commercial/flightxml/
+
+http://blog.programmableweb.com/2007/10/29/5-travel-apis-from-comparison-to-booking/
+
+http://api.skyscanner.net/api/ajax/documentation.html
+
+http://expediaaffiliate.com/Products/API
+
+http://support.travelpayouts.com/entries/23398368-Flight-Search-API
+
+http://www.wego.com/api/flights/docs
+
+http://www.cleartrip.com/api/docs/air-api/
+
+https://admin.travelfusion.com/xmlspec/v2/
+
+http://flightwise.com/PlaneXML_API.html
+
+http://www.fileguru.com/apps/online_air_tickets_booking_api_code
+
+http://www.freedownloadmanager.org/download/api-for-air-ticket-booking-5886071.html
+
+http://www.travelfusion.com/suppliers/airline-rail-api
+
+
+---
+
+Free
+
+Cleartrip API - http://www.cleartrip.com/api/docs/air-api/index.shtml
+Vianet API - http://www.bookit.co.nz/solutions_resellers.aspx
+
+Commercial
+
+AgentFactor Travel API - http://travelstrategybusiness.com/travel-20-portal-builder/
+Rezgo API - http://support.rezgo.com/category/developers
+TravelFusion API - http://xmldocs.travelfusion.com/
+TravelPort API - http://www.travelportuniversalapi.com/
+
+---
+
+The below mentioned Global Distribution Systems provides access to their API
+
+Galileo by Travel Port
+Abacus or Sabre
+Amadeus
+Merits:
+
+Direct interaction with the content provider
+Possibility of lower fares
+Can bargain directly with airlines for great deals
+Get extended support for the developer
+Demerits:
+
+Need IATA license for ticketing
+Need huge bank guarantee for ticket stock
+Complexity of development
+Missing non GDS participants
+Need to purchase & develop api for non gds participants
+The below mentioned consolidators also provide access to their API
+
+Clear Trip
+Make My Trip
+Infinity Solutions
+Merits: - Normally easy to develop - Normally consolidators provide gds as well as non-gds participants
+
+Demerits: - No direct interaction with airlines - not much support for development
+
+http://www.itasoftware.com/products/shopping-pricing/qpx.html
+
+---
