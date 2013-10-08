@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DiscoveryClientResultsFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd12" filename="UcmdbService.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd21" filename="UcmdbService0.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd8" filename="UcmdbService1.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd0" filename="UcmdbService2.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd4" filename="UcmdbService3.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd1" filename="UcmdbService4.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd16" filename="UcmdbService5.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd24" filename="UcmdbService6.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd25" filename="UcmdbService7.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd13" filename="UcmdbService8.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd23" filename="UcmdbService9.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?wsdl" filename="UcmdbService.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd17" filename="UcmdbService10.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd2" filename="UcmdbService11.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd6" filename="UcmdbService12.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd19" filename="UcmdbService13.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd10" filename="UcmdbService14.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd27" filename="UcmdbService15.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService?xsd=xsd3" filename="UcmdbService16.xsd" />
+  </Results>
+</DiscoveryClientResultsFile>
