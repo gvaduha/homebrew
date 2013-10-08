@@ -19,6 +19,7 @@ namespace ucmdb
     /// <param name="appContextName">Name to be used in CMDB context, by default will be used new GUID</param>
     public UcmdbDataRetriever(Uri ucmdbUri, NetworkCredential credentials, string appContextName = null)
     {
+      _svc.Url = ucmdbUri.ToString();
       var credentialCache = new CredentialCache { { ucmdbUri, "Basic", credentials } };
       _svc.Credentials = credentialCache;
       _ctx = new CmdbContext { callerApplication = appContextName ?? Guid.NewGuid().ToString() };

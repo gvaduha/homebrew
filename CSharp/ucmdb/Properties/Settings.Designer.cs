@@ -22,15 +22,5 @@ namespace ucmdb.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://10.45.129.6:8080/axis2/services/UcmdbService")]
-        public string ucmdb_UcmdbService_UcmdbService {
-            get {
-                return ((string)(this["ucmdb_UcmdbService_UcmdbService"]));
-            }
-        }
     }
 }

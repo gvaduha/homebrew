@@ -141,14 +141,6 @@ namespace ucmdb.UcmdbService {
         
         /// <remarks/>
         public UcmdbService() {
-            this.Url = global::ucmdb.Properties.Settings.Default.ucmdb_UcmdbService_UcmdbService;
-            if ((this.IsLocalFileSystemWebService(this.Url) == true)) {
-                this.UseDefaultCredentials = true;
-                this.useDefaultCredentialsSetExplicitly = false;
-            }
-            else {
-                this.useDefaultCredentialsSetExplicitly = true;
-            }
         }
         
         public new string Url {

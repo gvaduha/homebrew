@@ -1,9 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ucmdb.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
   <Profiles />
-  <Settings>
-    <Setting Name="ucmdb_UcmdbService_UcmdbService" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://10.45.129.6:8080/axis2/services/UcmdbService</Value>
-    </Setting>
-  </Settings>
+  <Settings />
 </SettingsFile>
