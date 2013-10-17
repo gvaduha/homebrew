@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Net;
 using ucmdb.UcmdbService;
 
@@ -8,13 +9,9 @@ namespace ucmdb
 {
   class Program
   {
-    static public void TestA(UcmdbDataRetriever udr)
+    static public void TestA(UcmdbDataRetriever udr, UcmdbEntitiesBuilder ueb)
     {
-      var props = new HashSet<string>
-                    {
-                      "ca_outstaff", "ca_login_name", "ca_location", "ca_last_name", "ca_job_description",
-                      "ca_middle_name", "ca_date_of_hire", "ca_email", "ca_employee_id", "ca_job_status"
-                    };
+      var props = typeof (Employee).AllUcmdbAttributedFields().Union(typeof (Employee).AllUcmdbAttributedProperties());
 
       var cond =
         new Conditions
@@ -40,16 +37,21 @@ namespace ucmdb
 
       try
       {
-        var collection = udr.GetFilteredCiByType("cc_employee", props, cond);
+        var collection = udr.GetFilteredCiByType("cc_employee", new HashSet<string>(props), cond);
+
+        //foreach (var x in collection)
+        //{
+        //  foreach (var y in x) Console.WriteLine(y.Key + "=" + y.Value);
+        //  Console.WriteLine("-----------------------------------");
+        //  Console.ReadLine();
+        //}
 
         foreach (var x in collection)
         {
-          foreach (var y in x) Console.WriteLine(y.Key + "=" + y.Value);
-          Console.WriteLine("-----------------------------------");
-          Console.ReadLine();
+          //var o = ueb.Build("cc_employee", new Dictionary<string, string>(x));
         }
       }
-      catch (UcmdbDataRetrieverException e)
+      catch (UcmdbFacadeException e)
       {
         Console.WriteLine(e.ToString());
         throw;
@@ -61,16 +63,25 @@ namespace ucmdb
     {
       string ucmdbUri = String.Format("http://{0}:8080/axis2/services/UcmdbService",args[0]);
 
-      //var x = new UcmdbDataRetriever(new Uri(ucmdbUri), new NetworkCredential("sysadmin", "sysadmin"), null);
-      var x = new UcmdbDataRetriever(new Uri(ucmdbUri), new NetworkCredential("guest", "guest123"), null);
+      //var u = new UcmdbDataRetriever(new Uri(ucmdbUri), new NetworkCredential("sysadmin", "sysadmin"), null);
+      var u = new UcmdbDataRetriever(new Uri(ucmdbUri), new NetworkCredential("guest", "guest123"));
 
-      TestA(x);
+      //u.x();
+
+      var ueb = new UcmdbEntitiesBuilder();
+      new[] { typeof(OrgUnit), typeof(Employee) }.Select(ueb.AddTemplateClass).ToList();
+
+      //var o = ueb.Build("cc_organization_unit", new Dictionary<string, string> { { "id", "10" }, { "name", "me" }, { "x", "5" } });
+
+      TestA(u, ueb);
+
+      Console.WriteLine();
     }
   }
 
   /*********************************************************************************************************/
   /*********************************************************************************************************/
-  /**************************************SOME PROBABLE USABLE CODEs*****************************************/
+  /**************************************SOME PROBABLE USABLE CODE******************************************/
   /*********************************************************************************************************/
   /*********************************************************************************************************/
 

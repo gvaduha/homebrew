@@ -54,7 +54,7 @@ namespace ucmdb
       }
       catch (Exception e)
       {
-        throw new UcmdbDataRetrieverException("GetFilteredCiByType", e);
+        throw new UcmdbFacadeException("GetFilteredCiByType", e);
       }
     }
 
@@ -129,5 +129,73 @@ namespace ucmdb
 
       return result;
     }
-  }
+
+
+    public void x()
+    {
+      var request = new executeTopologyQueryByNameWithParameters { cmdbContext = _ctx, queryName = "New_View_2" };
+
+      //set parameters
+      var hostParametrizedNode = new ParameterizedNode { nodeLabel = "Host" };
+      var parameters = new CIProperties();
+      var strProps = new StrProp[1];
+      var strProp = new StrProp { name = "host_os", value = "%2000%" };
+      strProps[0] = strProp;
+      parameters.strProps = strProps;
+      hostParametrizedNode.parameters = parameters;
+
+      var diskParametrizedNode = new ParameterizedNode { nodeLabel = "Disk" };
+      var parameters1 = new CIProperties();
+      var intProps = new IntProp[1];
+      var intProp = new IntProp { name = "disk_failures", value = "30" };
+      intProps[0] = intProp;
+      parameters1.intProps = intProps;
+      diskParametrizedNode.parameters = parameters1;
+
+      request.parameterizedNodes = new[] { hostParametrizedNode, diskParametrizedNode };
+
+      //properties to retrieve (TypedProperties[])
+      //request.queryTypedProperties
+      #region "test"
+      var tp = new TypedProperties();
+      tp.properties.predefinedTypedProperties.simpleTypedPredefinedProperties = new SimpleTypedPredefinedProperty[]
+                                                                                  {
+                                                                                    new SimpleTypedPredefinedProperty { name = SimpleTypedPredefinedPropertyName.CONCRETE}
+                                                                                  };
+
+      request.queryTypedProperties = new[]
+                                       {
+                                         new TypedProperties
+                                           {
+                                             properties = new CustomTypedProperties
+                                                            {
+                                                              predefinedTypedProperties =
+                                                                new PredefinedTypedProperties()
+                                                                  {
+                                                                    simpleTypedPredefinedProperties = new[]
+                                                                                                        {
+                                                                                                          new SimpleTypedPredefinedProperty
+                                                                                                            {
+                                                                                                              name = SimpleTypedPredefinedPropertyName.CONCRETE
+                                                                                                            }
+                                                                                                        }
+                                                                  }
+                                                            }
+                                           }
+                                       };
+      #endregion
+
+      try
+      {
+        var response = _svc.executeTopologyQueryByNameWithParameters(request);
+        var topologyMap = response.topologyMap;
+
+
+      }
+      catch (Exception e)
+      {
+      }
+    }
+ }
+
 }
