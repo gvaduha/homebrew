@@ -9,7 +9,7 @@ namespace ucmdb
 {
   class Program
   {
-    static public void TestA(UcmdbDataRetriever udr, UcmdbEntitiesBuilder ueb)
+    static public void TestA(string className, UcmdbDataRetriever udr, UcmdbEntitiesBuilder ueb)
     {
       var props = typeof (Employee).AllUcmdbAttributedFields().Union(typeof (Employee).AllUcmdbAttributedProperties());
 
@@ -37,18 +37,16 @@ namespace ucmdb
 
       try
       {
-        var collection = udr.GetFilteredCiByType("cc_employee", new HashSet<string>(props), cond);
+        var collection = udr.GetFilteredCiByType(className, new HashSet<string>(props), cond);
 
-        //foreach (var x in collection)
-        //{
-        //  foreach (var y in x) Console.WriteLine(y.Key + "=" + y.Value);
-        //  Console.WriteLine("-----------------------------------");
-        //  Console.ReadLine();
-        //}
-
-        foreach (var x in collection)
+        foreach (var ucmdbEntity in collection)
         {
-          //var o = ueb.Build("cc_employee", new Dictionary<string, string>(x));
+          var o = ueb.Build(className, ucmdbEntity);
+
+          foreach (var x in o.UcmdbAttributedToEnumerable())
+            Console.WriteLine(x.Key + "=" + x.Value);
+          Console.WriteLine("-----------------------------------");
+          Console.ReadLine();
         }
       }
       catch (UcmdbFacadeException e)
@@ -73,7 +71,7 @@ namespace ucmdb
 
       //var o = ueb.Build("cc_organization_unit", new Dictionary<string, string> { { "id", "10" }, { "name", "me" }, { "x", "5" } });
 
-      TestA(u, ueb);
+      TestA("cc_employee", u, ueb);
 
       Console.WriteLine();
     }

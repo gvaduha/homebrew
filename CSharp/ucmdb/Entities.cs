@@ -56,9 +56,6 @@ namespace ucmdb
     [UcmdbAttribute("ca_exbsgv")]
     public string IsExBsgv { get; set; }
 
-    [UcmdbAttribute("XXX")]
-    public string XXX;
-
     //[UcmdbAttribute("")]
     //public string  { get; set; }
     //[UcmdbAttribute("")]

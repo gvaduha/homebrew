@@ -5,10 +5,18 @@ using System.Reflection;
 
 namespace ucmdb
 {
+  /// <summary>
+  /// Builds class tagged with UcmdbAttributes instances
+  /// </summary>
   public class UcmdbEntitiesBuilder
   {
     private readonly Dictionary<string, Type> _templateClasses = new Dictionary<string, Type>();
 
+    /// <summary>
+    /// Adds class tagged as UcmdbCiType to builder collection
+    /// </summary>
+    /// <param name="classType"></param>
+    /// <returns></returns>
     public UcmdbEntitiesBuilder AddTemplateClass(Type classType)
     {
       var attr = classType.GetCustomAttributes(typeof(UcmdbCiTypeAttribute), false);
@@ -21,6 +29,11 @@ namespace ucmdb
       return this;
     }
 
+    /// <summary>
+    /// Creates object of typeName
+    /// </summary>
+    /// <param name="typeName"></param>
+    /// <returns></returns>
     public object Create(string typeName)
     {
       var classType = _templateClasses.FirstOrDefault(x => x.Key == typeName);
@@ -31,6 +44,13 @@ namespace ucmdb
       return Activator.CreateInstance(classType.Value);
     }
 
+    /// <summary>
+    /// Creates object of typeName and initialize object properties and fields marked as UcmdbAttributeAttribute
+    /// with attrValues corresponsing values
+    /// </summary>
+    /// <param name="typeName"></param>
+    /// <param name="attrValues"></param>
+    /// <returns></returns>
     public object Build(string typeName, IDictionary<string, string> attrValues)
     {
       var obj = Create(typeName);

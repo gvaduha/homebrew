@@ -35,7 +35,7 @@ namespace ucmdb
     /// <param name="properties">CI's properties to request</param>
     /// <param name="conditions">Conditions to filter CIs</param>
     /// <returns>List of CI's property-value dictionaries. Records are sparsed.</returns>
-    public IEnumerable<IEnumerable<KeyValuePair<string, string>>> GetFilteredCiByType(string ciType, ISet<string> properties, Conditions conditions)
+    public IEnumerable<IDictionary<string, string>> GetFilteredCiByType(string ciType, ISet<string> properties, Conditions conditions)
     {
       var request = new getFilteredCIsByType
       {
@@ -64,7 +64,7 @@ namespace ucmdb
     /// <param name="ucmdbResponse">Response from one of uCMDB request function</param>
     /// <param name="propNames">CI's properties to return</param>
     /// <returns>List of CI's property-value dictionaries. Records are sparsed.</returns>
-    private IEnumerable<IEnumerable<KeyValuePair<string, string>>> ProcessResponse(dynamic ucmdbResponse, ISet<string> propNames)
+    private IEnumerable<IDictionary<string, string>> ProcessResponse(dynamic ucmdbResponse, ISet<string> propNames)
     {
       if (ucmdbResponse.chunkInfo.numberOfChunks == 0) // Number of chunks is 0 when all results fitted in ucmdbResponse
       {
@@ -98,34 +98,41 @@ namespace ucmdb
     /// <param name="ci">uCMDB CI record</param>
     /// <param name="propNames">Name of properties to return</param>
     /// <returns>Dictionary of property name - values</returns>
-    public virtual IEnumerable<KeyValuePair<string, string>> ProcessCi(CI ci, ISet<string> propNames)
+    public virtual IDictionary<string, string> ProcessCi(CI ci, ISet<string> propNames)
     {
-      var result = new List<KeyValuePair<string, string>>
+      var result = new Dictionary<string,string>
                      {
                        //Always add id
-                       new KeyValuePair<string, string>("id", ci.ID.Value)
+                       {"id", ci.ID.Value}
                      };
 
-      //result.AddRange(from strProp in ci.props.strProps
+      //addToResult(from strProp in ci.props.strProps
       //                where propNames.Contains(strProp.name)
       //                select new KeyValuePair<string, string>(strProp.name, strProp.value));
 
-      Func<IEnumerable<dynamic>, IEnumerable<KeyValuePair<string, string>>> fun =
+      Func<IEnumerable<dynamic>, IEnumerable<KeyValuePair<string, string>>> getProps =
         list => from prop in list
                 where propNames.Contains((string)prop.name)
                 select new KeyValuePair<string, string>(prop.name, prop.value.ToString());
 
-      if (ci.props.booleanProps != null) result.AddRange(fun(ci.props.booleanProps));
-      if (ci.props.bytesProps != null) result.AddRange(fun(ci.props.bytesProps));
-      if (ci.props.dateProps != null) result.AddRange(fun(ci.props.dateProps));
-      if (ci.props.doubleProps != null) result.AddRange(fun(ci.props.doubleProps));
-      if (ci.props.floatProps != null) result.AddRange(fun(ci.props.floatProps));
-      if (ci.props.intListProps != null) result.AddRange(fun(ci.props.intListProps));
-      if (ci.props.intProps != null) result.AddRange(fun(ci.props.intProps));
-      if (ci.props.longProps != null) result.AddRange(fun(ci.props.longProps));
-      if (ci.props.strListProps != null) result.AddRange(fun(ci.props.strListProps));
-      if (ci.props.strProps != null) result.AddRange(fun(ci.props.strProps));
-      if (ci.props.xmlProps != null) result.AddRange(fun(ci.props.xmlProps));
+      Action<IEnumerable<KeyValuePair<string, string>>> addToResult =
+        list =>
+          {
+            foreach (var x in list.Where(x => !result.ContainsKey(x.Key)))
+              result.Add(x.Key, x.Value);
+          };
+
+      if (ci.props.booleanProps != null) addToResult(getProps(ci.props.booleanProps));
+      if (ci.props.bytesProps != null) addToResult(getProps(ci.props.bytesProps));
+      if (ci.props.dateProps != null) addToResult(getProps(ci.props.dateProps));
+      if (ci.props.doubleProps != null) addToResult(getProps(ci.props.doubleProps));
+      if (ci.props.floatProps != null) addToResult(getProps(ci.props.floatProps));
+      if (ci.props.intListProps != null) addToResult(getProps(ci.props.intListProps));
+      if (ci.props.intProps != null) addToResult(getProps(ci.props.intProps));
+      if (ci.props.longProps != null) addToResult(getProps(ci.props.longProps));
+      if (ci.props.strListProps != null) addToResult(getProps(ci.props.strListProps));
+      if (ci.props.strProps != null) addToResult(getProps(ci.props.strProps));
+      if (ci.props.xmlProps != null) addToResult(getProps(ci.props.xmlProps));
 
       return result;
     }
@@ -158,7 +165,7 @@ namespace ucmdb
       //request.queryTypedProperties
       #region "test"
       var tp = new TypedProperties();
-      tp.properties.predefinedTypedProperties.simpleTypedPredefinedProperties = new SimpleTypedPredefinedProperty[]
+      tp.properties.predefinedTypedProperties.simpleTypedPredefinedProperties = new[]
                                                                                   {
                                                                                     new SimpleTypedPredefinedProperty { name = SimpleTypedPredefinedPropertyName.CONCRETE}
                                                                                   };
@@ -170,7 +177,7 @@ namespace ucmdb
                                              properties = new CustomTypedProperties
                                                             {
                                                               predefinedTypedProperties =
-                                                                new PredefinedTypedProperties()
+                                                                new PredefinedTypedProperties
                                                                   {
                                                                     simpleTypedPredefinedProperties = new[]
                                                                                                         {

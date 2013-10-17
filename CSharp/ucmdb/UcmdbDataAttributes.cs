@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ucmdb
 {
+  /// <summary>
+  /// Ucmdb entity class marker
+  /// </summary>
   [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
   public class UcmdbCiTypeAttribute : Attribute
   {
@@ -16,6 +16,9 @@ namespace ucmdb
     }
   }
 
+  /// <summary>
+  /// Ucmdb entity class attributes marker
+  /// </summary>
   [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
   public class UcmdbAttributeAttribute : Attribute
   {
