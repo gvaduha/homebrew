@@ -64,14 +64,14 @@ namespace ucmdb
       //var u = new UcmdbDataRetriever(new Uri(ucmdbUri), new NetworkCredential("sysadmin", "sysadmin"), null);
       var u = new UcmdbDataRetriever(new Uri(ucmdbUri), new NetworkCredential("guest", "guest123"));
 
-      //u.x();
+      //var ueb = new UcmdbEntitiesBuilder();
+      //new[] { typeof(OrgUnit), typeof(Employee) }.Select(ueb.AddTemplateClass).ToList();
 
-      var ueb = new UcmdbEntitiesBuilder();
-      new[] { typeof(OrgUnit), typeof(Employee) }.Select(ueb.AddTemplateClass).ToList();
+      //TestA("cc_employee", u, ueb);
 
-      //var o = ueb.Build("cc_organization_unit", new Dictionary<string, string> { { "id", "10" }, { "name", "me" }, { "x", "5" } });
 
-      TestA("cc_employee", u, ueb);
+      u.x();
+
 
       Console.WriteLine();
     }

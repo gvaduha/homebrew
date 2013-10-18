@@ -5,23 +5,10 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 
-namespace ucmdb
+namespace ucmdb.UnitTests
 {
-  [UcmdbCiType("test_type")]
-  class TestType
-  {
-    [UcmdbAttribute("str")]
-    public string Str { get; set; }
-    [UcmdbAttribute("date")]
-    public DateTime? Date { get; set; }
-    [UcmdbAttribute("int")]
-    public int? Int;
-    [UcmdbAttribute("bool")]
-    public bool? Bool;
-  }
-
   [TestFixture]
-  public class UcmdbEntityBuilderTest
+  class UcmdbEntitiesBuilderTest
   {
     [Test]
     [ExpectedException(typeof(UcmdbFacadeException))]

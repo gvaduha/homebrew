@@ -55,38 +55,45 @@ namespace ucmdb
     {
       var obj = Create(typeName);
 
-      //Fill properties for which attribute is defined
-      var props = from p in obj.GetType().GetProperties()
-                  let attrs = p.GetCustomAttributes(typeof(UcmdbAttributeAttribute), false)
-                  where attrs.Length != 0
-                  select
-                    new KeyValuePair<UcmdbAttributeAttribute, PropertyInfo>((UcmdbAttributeAttribute)attrs.First(), p);
-
-      foreach (var p in props)
+      try
       {
-        var p1 = p;
-        var attrValue = attrValues.FirstOrDefault(x => x.Key == p1.Key.Name);
+        //Fill properties for which attribute is defined
+        var props = from p in obj.GetType().GetProperties()
+                    let attrs = p.GetCustomAttributes(typeof(UcmdbAttributeAttribute), false)
+                    where attrs.Length != 0
+                    select
+                      new KeyValuePair<UcmdbAttributeAttribute, PropertyInfo>((UcmdbAttributeAttribute)attrs.First(), p);
 
-        if (attrValue.Value != null)
-          p.Value.SetValue(obj, Convert.ChangeType(attrValue.Value,
-                        Nullable.GetUnderlyingType(p.Value.PropertyType) ?? p.Value.PropertyType), null);
+        foreach (var p in props)
+        {
+          var p1 = p;
+          var attrValue = attrValues.FirstOrDefault(x => x.Key == p1.Key.Name);
+
+          if (attrValue.Value != null)
+            p.Value.SetValue(obj, Convert.ChangeType(attrValue.Value,
+                          Nullable.GetUnderlyingType(p.Value.PropertyType) ?? p.Value.PropertyType), null);
+        }
+
+        //Fill fields for which attribute is defined
+        var fields = from f in obj.GetType().GetFields()
+                     let attrs = f.GetCustomAttributes(typeof(UcmdbAttributeAttribute), false)
+                     where attrs.Length != 0
+                     select
+                       new KeyValuePair<UcmdbAttributeAttribute, FieldInfo>((UcmdbAttributeAttribute)attrs.First(), f);
+
+        foreach (var f in fields)
+        {
+          var f1 = f;
+          var attrValue = attrValues.FirstOrDefault(x => x.Key == f1.Key.Name);
+
+          if (attrValue.Value != null)
+            f.Value.SetValue(obj, Convert.ChangeType(attrValue.Value,
+              Nullable.GetUnderlyingType(f.Value.FieldType) ?? f.Value.FieldType));
+        }
       }
-
-      //Fill fields for which attribute is defined
-      var fields = from f in obj.GetType().GetFields()
-                   let attrs = f.GetCustomAttributes(typeof(UcmdbAttributeAttribute), false)
-                   where attrs.Length != 0
-                   select
-                     new KeyValuePair<UcmdbAttributeAttribute, FieldInfo>((UcmdbAttributeAttribute)attrs.First(), f);
-
-      foreach (var f in fields)
+      catch (Exception e)
       {
-        var f1 = f;
-        var attrValue = attrValues.FirstOrDefault(x => x.Key == f1.Key.Name);
-
-        if (attrValue.Value != null)
-          f.Value.SetValue(obj, Convert.ChangeType(attrValue.Value,
-            Nullable.GetUnderlyingType(f.Value.FieldType) ?? f.Value.FieldType));
+        throw new UcmdbFacadeException(String.Format("Building object of type {0} failed", typeName), e);
       }
 
       return obj;

@@ -61,7 +61,9 @@
     <Compile Include="UcmdbDataRetriever.cs" />
     <Compile Include="UcmdbEntitiesBuilder.cs" />
     <Compile Include="UcmdbEntitiesExtensions.cs" />
-    <Compile Include="UnitTests\UcmdbEntityBuilderTest.cs" />
+    <Compile Include="UnitTests\TestEntities.cs" />
+    <Compile Include="UnitTests\UcmdbEntitiesExtensionsTest.cs" />
+    <Compile Include="UnitTests\UcmdbEntitiesBuilderTest.cs" />
     <Compile Include="UcmdbFacadeException.cs" />
     <Compile Include="Web References\UcmdbService\Reference.cs">
       <AutoGen>True</AutoGen>
