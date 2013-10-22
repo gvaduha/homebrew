@@ -38,6 +38,10 @@ ehthumbs.db
 Thumbs.db
 
 #Mine
+#
+#Python
+__pycache__
+#C#
 obj
 bin
 _ReSharper.*
