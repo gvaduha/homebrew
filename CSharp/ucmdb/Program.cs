@@ -1,76 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Net;
-using ucmdb.UcmdbService;
+using ucmdb.UnitTests;
 
 namespace ucmdb
 {
   class Program
   {
-    static public void TestA(string className, UcmdbDataRetriever udr, UcmdbEntitiesBuilder ueb)
-    {
-      var props = typeof (Employee).AllUcmdbAttributedFields().Union(typeof (Employee).AllUcmdbAttributedProperties());
-
-      var cond =
-        new Conditions
-          {
-            booleanConditions = new BooleanConditions
-                                  {
-                                    booleanCondition = new[]
-                                                         {
-                                                           new BooleanCondition
-                                                             {
-                                                               booleanOperator =BooleanConditionBooleanOperator.Equal,
-                                                               condition =
-                                                                 new BooleanProp
-                                                                   {
-                                                                     name = "ca_blocked",
-                                                                     value = false,
-                                                                     valueSpecified = true
-                                                                   }
-                                                             }
-                                                         }
-                                  }
-          };
-
-      try
-      {
-        var collection = udr.GetFilteredCiByType(className, new HashSet<string>(props), cond);
-
-        foreach (var ucmdbEntity in collection)
-        {
-          var o = ueb.Build(className, ucmdbEntity);
-
-          foreach (var x in o.UcmdbAttributedToEnumerable())
-            Console.WriteLine(x.Key + "=" + x.Value);
-          Console.WriteLine("-----------------------------------");
-          Console.ReadLine();
-        }
-      }
-      catch (UcmdbFacadeException e)
-      {
-        Console.WriteLine(e.ToString());
-        throw;
-      }
-    }
-
 
     static void Main(string[] args)
     {
-      string ucmdbUri = String.Format("http://{0}:8080/axis2/services/UcmdbService",args[0]);
-
-      //var u = new UcmdbDataRetriever(new Uri(ucmdbUri), new NetworkCredential("sysadmin", "sysadmin"), null);
-      var u = new UcmdbDataRetriever(new Uri(ucmdbUri), new NetworkCredential("guest", "guest123"));
-
-      //var ueb = new UcmdbEntitiesBuilder();
-      //new[] { typeof(OrgUnit), typeof(Employee) }.Select(ueb.AddTemplateClass).ToList();
-
-      //TestA("cc_employee", u, ueb);
-
-
-      u.x();
+      var tst = new UcmdbDataRetrieverTest();
+      tst.Initialize(args[0]);
+      //tst.TestEmployeeLoad("cc_employee");
+      tst.TestTopologyRequest();
 
 
       Console.WriteLine();

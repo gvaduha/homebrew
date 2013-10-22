@@ -62,6 +62,7 @@
     <Compile Include="UcmdbEntitiesBuilder.cs" />
     <Compile Include="UcmdbEntitiesExtensions.cs" />
     <Compile Include="UnitTests\TestEntities.cs" />
+    <Compile Include="UnitTests\UcmdbDataRetrieverTest.cs" />
     <Compile Include="UnitTests\UcmdbEntitiesExtensionsTest.cs" />
     <Compile Include="UnitTests\UcmdbEntitiesBuilderTest.cs" />
     <Compile Include="UcmdbFacadeException.cs" />

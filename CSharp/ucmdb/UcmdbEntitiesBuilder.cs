@@ -51,7 +51,7 @@ namespace ucmdb
     /// <param name="typeName"></param>
     /// <param name="attrValues"></param>
     /// <returns></returns>
-    public object Build(string typeName, IDictionary<string, string> attrValues)
+    public object Build(string typeName, IDictionary<string, object> attrValues)
     {
       var obj = Create(typeName);
 
@@ -70,8 +70,9 @@ namespace ucmdb
           var attrValue = attrValues.FirstOrDefault(x => x.Key == p1.Key.Name);
 
           if (attrValue.Value != null)
-            p.Value.SetValue(obj, Convert.ChangeType(attrValue.Value,
-                          Nullable.GetUnderlyingType(p.Value.PropertyType) ?? p.Value.PropertyType), null);
+            p.Value.SetValue(obj, 
+              Convert.ChangeType(attrValue.Value,Nullable.GetUnderlyingType(p.Value.PropertyType) ?? p.Value.PropertyType)
+              , null);
         }
 
         //Fill fields for which attribute is defined

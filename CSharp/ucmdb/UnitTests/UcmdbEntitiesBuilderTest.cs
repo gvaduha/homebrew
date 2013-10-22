@@ -35,24 +35,26 @@ namespace ucmdb.UnitTests
       eb.AddTemplateClass(typeof(TestType));
 
       //Correct
-      var o = eb.Build("test_type", new Dictionary<string, string> { { "str", "test" }, { "date", "10/10/10" }, { "int", "5" }, { "bool", "True" } });
+      var o = eb.Build("test_type", new Dictionary<string, object> { { "str", "test" }, { "date", "10/10/10" }, { "int", "5" }, { "bool", "True" } });
       Assert.AreEqual(o.GetType(), typeof(TestType));
       AssertObjects.PropertyValuesAreEquals(o, new TestType { Str = "test", Date = new DateTime(2010, 10, 10), Int = 5, Bool = true });
-      //o = eb.Build("test_type", new Dictionary<string, string> { { "str", null }, { "date", "10/10/2010" }, { "int", "-5" }, { "bool", "1" } });
+      o = eb.Build("test_type", new Dictionary<string, object> { { "str", "test" }, { "date", new DateTime(2010, 10, 10) }, { "int", 5 }, { "bool", true } });
+      AssertObjects.PropertyValuesAreEquals(o, new TestType { Str = "test", Date = new DateTime(2010, 10, 10), Int = 5, Bool = true });
+      //o = eb.Build("test_type", new Dictionary<string, object> { { "str", null }, { "date", "10/10/2010" }, { "int", "-5" }, { "bool", "1" } });
       //AssertObjects.PropertyValuesAreEquals(o, new TestType { Date = new DateTime(2010, 10, 10), Int = -5, Bool = true });
 
       //Redudant elements
-      o = eb.Build("test_type", new Dictionary<string, string> { { "x", "x" }, { "str", "test" }, { "date", "10/10/10" }, { "int", "5" }, { "bool", "True" } });
+      o = eb.Build("test_type", new Dictionary<string, object> { { "x", "x" }, { "str", "test" }, { "date", "10/10/10" }, { "int", "5" }, { "bool", "True" } });
       AssertObjects.PropertyValuesAreEquals(o, new TestType { Str = "test", Date = new DateTime(2010, 10, 10), Int = 5, Bool = true });
 
       //Sparce elements
-      o = eb.Build("test_type", new Dictionary<string, string> { { "int", "5" }, { "bool", "True" } });
+      o = eb.Build("test_type", new Dictionary<string, object> { { "int", "5" }, { "bool", "True" } });
       AssertObjects.PropertyValuesAreEquals(o, new TestType { Int = 5, Bool = true });
-      o = eb.Build("test_type", new Dictionary<string, string> { { "str", "test" } });
+      o = eb.Build("test_type", new Dictionary<string, object> { { "str", "test" } });
       AssertObjects.PropertyValuesAreEquals(o, new TestType {Str = "test"});
 
       //Null elements
-      o = eb.Build("test_type", new Dictionary<string, string> { { "str", null }, { "bool", null } });
+      o = eb.Build("test_type", new Dictionary<string, object> { { "str", null }, { "bool", null } });
       AssertObjects.PropertyValuesAreEquals(o, new TestType { Str = null, Bool = null });
     }
 

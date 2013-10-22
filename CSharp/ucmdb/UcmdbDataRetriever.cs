@@ -35,7 +35,7 @@ namespace ucmdb
     /// <param name="properties">CI's properties to request</param>
     /// <param name="conditions">Conditions to filter CIs</param>
     /// <returns>List of CI's property-value dictionaries. Records are sparsed.</returns>
-    public IEnumerable<IDictionary<string, string>> GetFilteredCiByType(string ciType, ISet<string> properties, Conditions conditions)
+    public IEnumerable<IDictionary<string, object>> GetFilteredCiByType(string ciType, ISet<string> properties, Conditions conditions)
     {
       var request = new getFilteredCIsByType
       {
@@ -64,7 +64,7 @@ namespace ucmdb
     /// <param name="ucmdbResponse">Response from one of uCMDB request function</param>
     /// <param name="propNames">CI's properties to return</param>
     /// <returns>List of CI's property-value dictionaries. Records are sparsed.</returns>
-    private IEnumerable<IDictionary<string, string>> ProcessResponse(dynamic ucmdbResponse, ISet<string> propNames)
+    private IEnumerable<IDictionary<string, object>> ProcessResponse(dynamic ucmdbResponse, ISet<string> propNames)
     {
       if (ucmdbResponse.chunkInfo.numberOfChunks == 0) // Number of chunks is 0 when all results fitted in ucmdbResponse
       {
@@ -93,116 +93,117 @@ namespace ucmdb
     }
 
     /// <summary>
-    /// Retrieves name value pairs from given ci
+    /// Retrieves name value pairs from given CI
     /// </summary>
     /// <param name="ci">uCMDB CI record</param>
-    /// <param name="propNames">Name of properties to return</param>
+    /// <param name="propNames">Name of properties to return. If null ALL properties selected</param>
     /// <returns>Dictionary of property name - values</returns>
-    public virtual IDictionary<string, string> ProcessCi(CI ci, ISet<string> propNames)
+    public virtual IDictionary<string, object> ProcessCi(CI ci, ISet<string> propNames)
     {
-      var result = new Dictionary<string,string>
+      //Add "special" property that don't listed in collections
+      var result = new Dictionary<string, object>
                      {
-                       //Always add id
                        {"id", ci.ID.Value}
                      };
 
-      //addToResult(from strProp in ci.props.strProps
-      //                where propNames.Contains(strProp.name)
-      //                select new KeyValuePair<string, string>(strProp.name, strProp.value));
-
-      Func<IEnumerable<dynamic>, IEnumerable<KeyValuePair<string, string>>> getProps =
-        list => from prop in list
-                where propNames.Contains((string)prop.name)
-                select new KeyValuePair<string, string>(prop.name, prop.value.ToString());
-
-      Action<IEnumerable<KeyValuePair<string, string>>> addToResult =
-        list =>
-          {
-            foreach (var x in list.Where(x => !result.ContainsKey(x.Key)))
-              result.Add(x.Key, x.Value);
-          };
-
-      if (ci.props.booleanProps != null) addToResult(getProps(ci.props.booleanProps));
-      if (ci.props.bytesProps != null) addToResult(getProps(ci.props.bytesProps));
-      if (ci.props.dateProps != null) addToResult(getProps(ci.props.dateProps));
-      if (ci.props.doubleProps != null) addToResult(getProps(ci.props.doubleProps));
-      if (ci.props.floatProps != null) addToResult(getProps(ci.props.floatProps));
-      if (ci.props.intListProps != null) addToResult(getProps(ci.props.intListProps));
-      if (ci.props.intProps != null) addToResult(getProps(ci.props.intProps));
-      if (ci.props.longProps != null) addToResult(getProps(ci.props.longProps));
-      if (ci.props.strListProps != null) addToResult(getProps(ci.props.strListProps));
-      if (ci.props.strProps != null) addToResult(getProps(ci.props.strProps));
-      if (ci.props.xmlProps != null) addToResult(getProps(ci.props.xmlProps));
+      AddPropsToDictionary(result, ci.props, propNames);
 
       return result;
     }
 
-
-    public void x()
+    /// <summary>
+    /// Retrieves name value pairs from given Relation
+    /// </summary>
+    /// <param name="relation">uCMDB Relation record</param>
+    /// <param name="propNames">Name of properties to return. If null ALL properties selected</param>
+    /// <returns>Dictionary of property name - values</returns>
+    public virtual IDictionary<string, object> ProcessRelation(Relation relation, ISet<string> propNames)
     {
-      var request = new executeTopologyQueryByNameWithParameters { cmdbContext = _ctx, queryName = "New_View_2" };
+      //Add "special" property that don't listed in collections
+      var result = new Dictionary<string, object>
+                     {
+                       {"id", relation.ID.Value},
+                       {"end1id", relation.end1ID},
+                       {"end2id", relation.end2ID}
+                     };
 
-      //set parameters
-      var hostParametrizedNode = new ParameterizedNode { nodeLabel = "Host" };
-      var parameters = new CIProperties();
-      var strProps = new StrProp[1];
-      var strProp = new StrProp { name = "host_os", value = "%2000%" };
-      strProps[0] = strProp;
-      parameters.strProps = strProps;
-      hostParametrizedNode.parameters = parameters;
+      AddPropsToDictionary(result, relation.props, propNames);
 
-      var diskParametrizedNode = new ParameterizedNode { nodeLabel = "Disk" };
-      var parameters1 = new CIProperties();
-      var intProps = new IntProp[1];
-      var intProp = new IntProp { name = "disk_failures", value = "30" };
-      intProps[0] = intProp;
-      parameters1.intProps = intProps;
-      diskParametrizedNode.parameters = parameters1;
+      return result;
+    }
 
-      request.parameterizedNodes = new[] { hostParametrizedNode, diskParametrizedNode };
+    /// <summary>
+    /// Retrieves name value pairs from CIProperties collection
+    /// </summary>
+    /// <param name="dict">Dictionary to add data to</param>
+    /// <param name="props">Collection of CIProperties to process</param>
+    /// <param name="propNames">Name of properties to return. If null ALL properties selected</param>
+    /// <returns>Dictionary of property name - values</returns>
+    protected void AddPropsToDictionary(IDictionary<string, object> dict, CIProperties props, ISet<string> propNames)
+    {
+      //Function which select item properties that listed in propNames set
+      Func<IEnumerable<dynamic>, IEnumerable<KeyValuePair<string, object>>> listedPropsSelector =
+        list => from prop in list
+                where propNames.Contains((string)prop.name)
+                select new KeyValuePair<string, object>(prop.name, prop.value);
 
-      //properties to retrieve (TypedProperties[])
-      //request.queryTypedProperties
-      #region "test"
-      var tp = new TypedProperties();
-      tp.properties.predefinedTypedProperties.simpleTypedPredefinedProperties = new[]
-                                                                                  {
-                                                                                    new SimpleTypedPredefinedProperty { name = SimpleTypedPredefinedPropertyName.CONCRETE}
-                                                                                  };
+      //Function which select ALL item properties
+      Func<IEnumerable<dynamic>, IEnumerable<KeyValuePair<string, object>>> fullPropsSelector =
+        list => from prop in list
+                select new KeyValuePair<string, object>(prop.name, prop.value);
 
-      request.queryTypedProperties = new[]
-                                       {
-                                         new TypedProperties
-                                           {
-                                             properties = new CustomTypedProperties
-                                                            {
-                                                              predefinedTypedProperties =
-                                                                new PredefinedTypedProperties
-                                                                  {
-                                                                    simpleTypedPredefinedProperties = new[]
-                                                                                                        {
-                                                                                                          new SimpleTypedPredefinedProperty
-                                                                                                            {
-                                                                                                              name = SimpleTypedPredefinedPropertyName.CONCRETE
-                                                                                                            }
-                                                                                                        }
-                                                                  }
-                                                            }
-                                           }
-                                       };
-      #endregion
+      //Select appropriate selector function
+      var getProps = propNames == null ? fullPropsSelector : listedPropsSelector;
+
+      //Function adds property and value in result Dictionary
+      Action<IEnumerable<KeyValuePair<string, object>>> addToResult =
+        list =>
+        {
+          foreach (var x in list) // list.Where(x => !result.ContainsKey(x.Key)) ?
+            dict.Add(x.Key, x.Value);
+        };
+
+      //Mess with java collections
+      if (props.booleanProps != null) addToResult(getProps(props.booleanProps));
+      if (props.bytesProps != null) addToResult(getProps(props.bytesProps));
+      if (props.dateProps != null) addToResult(getProps(props.dateProps));
+      if (props.doubleProps != null) addToResult(getProps(props.doubleProps));
+      if (props.floatProps != null) addToResult(getProps(props.floatProps));
+      if (props.intListProps != null) addToResult(getProps(props.intListProps));
+      if (props.intProps != null) addToResult(getProps(props.intProps));
+      if (props.longProps != null) addToResult(getProps(props.longProps));
+      //if (props.strListProps != null) addToResult(getProps(props.strListProps)); There's no .value in strListProps
+      if (props.strProps != null) addToResult(getProps(props.strProps));
+      if (props.xmlProps != null) addToResult(getProps(props.xmlProps));
+    }
+
+
+    /// <summary>
+    /// Execute executeTopologyQueryByNameWithParameters and return result. 
+    /// Sketch version! Should be redone to implement good lazy collections return interface.
+    /// </summary>
+    /// <param name="viewName">Name of the uCMDB view</param>
+    /// <param name="parameters">Named "parametrized" parameters of the view</param>
+    /// <returns>TopologyMap CIs(Type1Cis[], ...) + Relations(RelType1[], ...)</returns>
+    public TopologyMap ExecuteTopologyQueryByNameWithParameters(string viewName, ParameterizedNode[] parameters)
+    {
+      var request = new executeTopologyQueryByNameWithParameters
+                      {
+                        cmdbContext = _ctx,
+                        queryName = viewName,
+                        parameterizedNodes = parameters
+                      };
 
       try
       {
         var response = _svc.executeTopologyQueryByNameWithParameters(request);
-        var topologyMap = response.topologyMap;
 
-
+        return response.topologyMap;
       }
       catch (Exception e)
       {
+        throw new UcmdbFacadeException(String.Format("Topology view {0} request failed", viewName), e);
       }
     }
- }
-
+  }
 }
