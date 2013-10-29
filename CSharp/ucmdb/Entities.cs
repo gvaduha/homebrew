@@ -54,7 +54,7 @@ namespace ucmdb
     [UcmdbAttribute("ca_director")]
     public bool IsDirector { get; set; }
     [UcmdbAttribute("ca_exbsgv")]
-    public string IsExBsgv { get; set; }
+    public bool IsExBsgv { get; set; }
 
     //[UcmdbAttribute("")]
     //public string  { get; set; }
