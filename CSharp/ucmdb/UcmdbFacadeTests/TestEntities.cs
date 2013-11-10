@@ -1,8 +1,20 @@
 ﻿using System;
-using UcmdbFacade;
 
-namespace ucmdb
+namespace UcmdbFacade.UnitTests
 {
+  [UcmdbCiType("test_type")]
+  class TestType
+  {
+    [UcmdbAttribute("str")]
+    public string Str { get; set; }
+    [UcmdbAttribute("date")]
+    public DateTime? Date { get; set; }
+    [UcmdbAttribute("int")]
+    public int? Int;
+    [UcmdbAttribute("bool")]
+    public bool? Bool;
+  }
+
   [UcmdbCiType("cc_organization_unit")]
   struct OrgUnit
   {
@@ -72,4 +84,5 @@ namespace ucmdb
     //[UcmdbAttribute("")]
     //public string  { get; set; }
   }
+
 }

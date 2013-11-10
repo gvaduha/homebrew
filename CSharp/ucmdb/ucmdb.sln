@@ -3,16 +3,31 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ucmdb", "ucmdb.csproj", "{C687F1A8-B925-4B26-9CE9-9E84EBC6FB9E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UcmdbFacade", "UcmdbFacade\UcmdbFacade.csproj", "{74A6A603-9684-48FA-BE48-727C8C765509}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UcmdbFacade.UnitTests", "UcmdbFacadeTests\UcmdbFacade.UnitTests.csproj", "{84512AF1-C64C-40B1-AAAB-CBE22E51B43E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{74A6A603-9684-48FA-BE48-727C8C765509}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{74A6A603-9684-48FA-BE48-727C8C765509}.Debug|x86.Build.0 = Debug|Any CPU
+		{74A6A603-9684-48FA-BE48-727C8C765509}.Release|x86.ActiveCfg = Release|Any CPU
+		{74A6A603-9684-48FA-BE48-727C8C765509}.Release|x86.Build.0 = Release|Any CPU
+		{84512AF1-C64C-40B1-AAAB-CBE22E51B43E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{84512AF1-C64C-40B1-AAAB-CBE22E51B43E}.Debug|x86.Build.0 = Debug|Any CPU
+		{84512AF1-C64C-40B1-AAAB-CBE22E51B43E}.Release|x86.ActiveCfg = Release|Any CPU
+		{84512AF1-C64C-40B1-AAAB-CBE22E51B43E}.Release|x86.Build.0 = Release|Any CPU
 		{C687F1A8-B925-4B26-9CE9-9E84EBC6FB9E}.Debug|x86.ActiveCfg = Debug|x86
 		{C687F1A8-B925-4B26-9CE9-9E84EBC6FB9E}.Debug|x86.Build.0 = Debug|x86
 		{C687F1A8-B925-4B26-9CE9-9E84EBC6FB9E}.Release|x86.ActiveCfg = Release|x86
 		{C687F1A8-B925-4B26-9CE9-9E84EBC6FB9E}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = ucmdb.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
