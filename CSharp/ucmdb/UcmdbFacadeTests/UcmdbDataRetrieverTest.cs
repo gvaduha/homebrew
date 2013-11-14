@@ -13,11 +13,11 @@ namespace UcmdbFacade.UnitTests
     private UcmdbDataRetriever _udr;
     private UcmdbEntitiesBuilder _ueb;
 
-    //This method has invalid signature and WILL BE IGNORED! SetUp shouldn't have parameters
     [TestFixtureSetUp]
-    public void Initialize(string serverName)
+    public void Initialize()
     {
-      string ucmdbUri = String.Format("http://{0}:8080/axis2/services/UcmdbService", serverName);
+      //const string ucmdbUri = "http://XXX_SERVER_XXX:8080/axis2/services/UcmdbService";
+      const string ucmdbUri = "http://rsb-asksmucmdb.rosbank.rus.socgen:8080/axis2/services/UcmdbService";
 
       //var _udr = new UcmdbDataRetriever(new Uri(ucmdbUri), new NetworkCredential("sysadmin", "sysadmin"), null);
       _udr = new UcmdbDataRetriever(new Uri(ucmdbUri), new NetworkCredential("guest", "guest123"));
@@ -27,8 +27,10 @@ namespace UcmdbFacade.UnitTests
     }
 
     [Test]
-    public void TestEmployeeLoad(string className)
+    public void TestEmployeeLoad()
     {
+      const string className = "cc_employee";
+
       var props = typeof(Employee).AllUcmdbAttributedFields().Union(typeof(Employee).AllUcmdbAttributedProperties());
 
       var cond =
@@ -50,9 +52,26 @@ namespace UcmdbFacade.UnitTests
                                                                    }
                                                              }
                                                          }
-                                  }
+                                  },
+            dateConditions = new DateConditions
+                               {
+                                 dateCondition = new[]
+                                                   {
+                                                     new DateCondition
+                                                       {
+                                                         dateOperator = DateConditionDateOperator.Greater,
+                                                         condition = new DateProp
+                                                                       {
+                                                                         name = "last_modified_time",
+                                                                         value = new DateTime(2013, 11, 11),
+                                                                         valueSpecified = true
+                                                                       }
+                                                       }
+                                                   }
+                               }
           };
 
+      
       try
       {
         var collection = _udr.GetFilteredCiByType(className, new HashSet<string>(props), cond);

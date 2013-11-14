@@ -34,23 +34,63 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Web.Services" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\UcmdbServiceFacade\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Service References\UcmdbServiceFacade\EmployeeService.wsdl" />
+    <None Include="Service References\UcmdbServiceFacade\EmployeeService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UcmdbServiceFacade\EmployeeService1.wsdl" />
+    <None Include="Service References\UcmdbServiceFacade\EmployeeService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UcmdbServiceFacade\EmployeeService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UcmdbServiceFacade\EmployeeService3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UcmdbServiceFacade\EmployeeService31.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UcmdbServiceFacade\ucmdb.UcmdbServiceFacade.Employee.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\UcmdbServiceFacade\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UcmdbServiceFacade\EmployeeService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UcmdbServiceFacade\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UcmdbServiceFacade\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UcmdbServiceFacade\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -60,14 +100,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <ProjectReference Include="UcmdbFacade\UcmdbFacade.csproj">
-      <Project>{74A6A603-9684-48FA-BE48-727C8C765509}</Project>
-      <Name>UcmdbFacade</Name>
-    </ProjectReference>
-    <ProjectReference Include="UcmdbFacadeTests\UcmdbFacade.UnitTests.csproj">
-      <Project>{84512AF1-C64C-40B1-AAAB-CBE22E51B43E}</Project>
-      <Name>UcmdbFacade.UnitTests</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

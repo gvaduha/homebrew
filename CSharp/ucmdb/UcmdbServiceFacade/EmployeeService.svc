@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="UcmdbServiceFacade.EmployeeService" CodeBehind="EmployeeService.svc.cs" %>

@@ -16,11 +16,12 @@ namespace UcmdbFacade
     /// </summary>
     /// <param name="ucmdbUri">URI of uCMDB service to connect</param>
     /// <param name="credentials">Basic network credentials</param>
+    /// <param name="authType">Type of authentication in credentials cache to be created for uCMDB access</param>
     /// <param name="appContextName">Name to be used in CMDB context, by default will be used new GUID</param>
-    public UcmdbDataRetriever(Uri ucmdbUri, NetworkCredential credentials, string appContextName = null)
+    public UcmdbDataRetriever(Uri ucmdbUri, NetworkCredential credentials, string authType = "Basic", string appContextName = null)
     {
       _svc.Url = ucmdbUri.ToString();
-      var credentialCache = new CredentialCache { { ucmdbUri, "Basic", credentials } };
+      var credentialCache = new CredentialCache { { ucmdbUri, authType, credentials } };
       _svc.Credentials = credentialCache;
       _ctx = new CmdbContext { callerApplication = appContextName ?? Guid.NewGuid().ToString() };
     }
@@ -34,15 +35,16 @@ namespace UcmdbFacade
     /// <param name="ciType">Type of CI to request</param>
     /// <param name="properties">CI's properties to request</param>
     /// <param name="conditions">Conditions to filter CIs</param>
+    /// <param name="andConditioning">Use AND operator between conditions if true, OR if false</param>
     /// <returns>List of CI's property-value dictionaries. Records are sparsed.</returns>
-    public IEnumerable<IDictionary<string, object>> GetFilteredCiByType(string ciType, ISet<string> properties, Conditions conditions)
+    public IEnumerable<IDictionary<string, object>> GetFilteredCiByType(string ciType, ISet<string> properties, Conditions conditions, bool andConditioning = true)
     {
       var request = new getFilteredCIsByType
       {
         cmdbContext = _ctx,
         type = ciType,
         conditions = conditions,
-        conditionsLogicalOperator = new getFilteredCIsByTypeConditionsLogicalOperator(),
+        conditionsLogicalOperator = andConditioning ? getFilteredCIsByTypeConditionsLogicalOperator.AND : getFilteredCIsByTypeConditionsLogicalOperator.OR,
         properties = new CustomProperties { propertiesList = properties.ToArray() }
       };
 
@@ -54,7 +56,7 @@ namespace UcmdbFacade
       }
       catch (Exception e)
       {
-        throw new UcmdbFacadeException("GetFilteredCiByType", e);
+        throw new UcmdbFacadeException(String.Format("GetFilteredCiByType ({0})", e.Message), e);
       }
     }
 
