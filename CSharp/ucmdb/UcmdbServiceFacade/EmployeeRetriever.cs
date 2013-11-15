@@ -17,7 +17,7 @@ namespace UcmdbServiceFacade
 
     public void ConnectToUcmdbServer(Uri ucmdbUri, NetworkCredential credentials, string appContextName = null)
     {
-      _udr = new UcmdbDataRetriever(ucmdbUri, credentials, appContextName);
+      _udr = new UcmdbDataRetriever(ucmdbUri, credentials, appContextName: appContextName);
     }
 
     public void FindUpdatedSince(DateTime date, bool nonBlockedOnly = true)
