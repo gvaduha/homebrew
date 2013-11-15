@@ -37,7 +37,7 @@ namespace UcmdbServiceFacade
     /// <summary>
     /// Set size of chunks returned by GetNextChunk
     /// </summary>
-    /// <param name="size">0 is set by default and means return all data in one chunk</param>
+    /// <param name="size">MaxValue is set by default and means return all data in one chunk</param>
     [OperationContract]
     void SetChunkSize(int size);
 

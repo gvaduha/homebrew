@@ -12,7 +12,7 @@ namespace UcmdbServiceFacade
     private UcmdbDataRetriever _udr;
     private readonly UcmdbEntitiesBuilder _ueb = new UcmdbEntitiesBuilder().AddTemplateClass(typeof(Employee));
     private IEnumerator<IDictionary<string, object>> _retEnumerator;
-    private int _retChunkSize;
+    private int _retChunkSize = int.MaxValue;
     private const string EmployeeClassName = "cc_employee";
 
     public void ConnectToUcmdbServer(Uri ucmdbUri, NetworkCredential credentials, string appContextName = null)
@@ -68,13 +68,13 @@ namespace UcmdbServiceFacade
     public IEnumerable<Employee> GetNextChunk()
     {
       int retCount = 0;
-      var ret = new List<Employee>(_retChunkSize);
+      var ret = new List<Employee>();
 
-      while (retCount++ < _retChunkSize)
+      while (_retEnumerator.MoveNext())
       {
-        ret[retCount++] = (Employee)_ueb.Build(EmployeeClassName, _retEnumerator.Current);
+        ret.Add((Employee)_ueb.Build(EmployeeClassName, _retEnumerator.Current));
 
-        _retEnumerator.MoveNext();
+        if (++retCount >= _retChunkSize) break;
       }
 
       return ret;
