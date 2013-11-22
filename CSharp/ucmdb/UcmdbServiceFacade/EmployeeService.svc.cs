@@ -7,9 +7,9 @@ namespace UcmdbServiceFacade
 {
 
   [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, Namespace = "http://localhost")]
-  public class EmployeeService : IEmployeeService
+  public class EmployeeService : IEntityRetriever<Employee>
   {
-    private readonly IEmployeeService _bridge = new EmployeeRetriever();
+    private readonly IEntityRetriever<Employee> _bridge = new EntityRetriever<Employee>();
 
     public void ConnectToUcmdbServer(Uri ucmdbUri, NetworkCredential credentials, string appContextName)
     {

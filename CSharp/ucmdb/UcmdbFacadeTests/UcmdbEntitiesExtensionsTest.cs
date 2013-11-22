@@ -9,6 +9,12 @@ namespace UcmdbFacade.UnitTests
   class UcmdbEntitiesExtensionsTest
   {
     [Test]
+    public void ClassTagNameTest()
+    {
+      Assert.True("test_type" == typeof(TestType).GetUcmdbTypeAttribute());
+    }
+
+    [Test]
     public void FieldsTagNamesTest()
     {
       var o = new TestType();

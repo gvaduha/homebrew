@@ -15,7 +15,7 @@ namespace UcmdbFacade
     /// Constructor
     /// </summary>
     /// <param name="ucmdbUri">URI of uCMDB service to connect</param>
-    /// <param name="credentials">Basic network credentials</param>
+    /// <param name="credentials">Username and password to login uCMDB server packed in NetworkCredentials</param>
     /// <param name="authType">Type of authentication in credentials cache to be created for uCMDB access</param>
     /// <param name="appContextName">Name to be used in CMDB context, by default will be used new GUID</param>
     public UcmdbDataRetriever(Uri ucmdbUri, NetworkCredential credentials, string authType = "Basic", string appContextName = null)

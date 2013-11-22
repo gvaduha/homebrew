@@ -63,13 +63,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EmployeeRetriever.cs" />
     <Compile Include="Entities.cs" />
     <Compile Include="EmployeeService.svc.cs">
       <DependentUpon>EmployeeService.svc</DependentUpon>
     </Compile>
-    <Compile Include="FakeEmployeeRetriever.cs" />
-    <Compile Include="IEmployeeService.cs" />
+    <Compile Include="EntityRetriever.cs" />
+    <Compile Include="FakeEntityRetriever.cs" />
+    <Compile Include="IEntityRetriever.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

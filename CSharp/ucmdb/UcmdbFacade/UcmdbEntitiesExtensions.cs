@@ -10,6 +10,16 @@ namespace UcmdbFacade
   public static class UcmdbEntitiesExtensions
   {
     /// <summary>
+    /// Return type's UcmdbCiTypeAttribute.Name attribute
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static string GetUcmdbTypeAttribute(this Type type)
+    {
+      return ((UcmdbCiTypeAttribute)type.GetCustomAttributes(typeof (UcmdbCiTypeAttribute), true).First()).Name;
+    }
+
+    /// <summary>
     /// Return collection of all UcmdbAttributeAttribute.Name for object.properties
     /// </summary>
     /// <param name="obj"></param>
