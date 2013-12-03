@@ -6,6 +6,8 @@ def format(filename):
         with open(filename) as f:
                 buff = ''
                 for line in f:
+                        if line.isspace() and len(buff) == 0: #skip lots of empty lines
+                                continue
                         if line.isspace():
                                 printbuff(buff)
                                 print()
