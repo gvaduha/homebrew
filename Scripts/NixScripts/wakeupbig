@@ -1,1 +1,3 @@
-eatherwake 00:22:15:CC:DD:7B
+powerwake cisco7788
+#powerwake 192.168.14.31
+#eatherwake 00:22:15:XX:XX:XX
