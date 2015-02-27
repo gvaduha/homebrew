@@ -7,7 +7,11 @@ if [ -z $1 ]; then
 	echo " CN - FQDN for certificate" 
 	echo " AltName - DNS alternate name"
 	exit 1 
-else 
+else
+
+	if (($# > 1)); then
+		altNames=1
+	fi
 	CN=$1
 	shift 
 fi 
@@ -17,22 +21,28 @@ if [ -d $CN ]; then
 	exit 
 fi 
 
-configFile=""
+if [ -n "$altNames" ]; then
+	configFile=""
 
-i=1
-while [ "$1" ]
-do
-	configFile="$(echo -e "$configFile\nDNS.$i=$1")"
-	shift
-	i=$(( i+1 ))
-done
+	i=1
+	while [ "$1" ]
+	do
+		configFile="$(echo -e "$configFile\nDNS.$i=$1")"
+		shift
+		i=$(( i+1 ))
+	done
 
-configFile="$(getConfigFile)"+"$configFile"
+	configFile="$(getConfigFile)"+"$configFile"
+fi
 
 mkdir $CN
 NAME=./$CN/$CN 
 
-openssl req -new -newkey rsa:2048 -nodes -keyout $NAME.key -x509 -days 3653 -subj "/C=XX/CN=$CN" -out $NAME.crt -config <(echo "$configFile") -extensions req_ext
+if [ -n "$altNames" ]; then
+	openssl req -new -newkey rsa:2048 -nodes -keyout $NAME.key -x509 -days 3653 -subj "/C=XX/CN=$CN" -out $NAME.crt -config <(echo "$configFile") -extensions req_ext
+else
+	openssl req -new -newkey rsa:2048 -nodes -keyout $NAME.key -x509 -days 3653 -subj "/C=XX/CN=$CN" -out $NAME.crt
+fi
 
 openssl x509 -in $NAME.crt -outform der -out $NAME.der
 
@@ -132,23 +142,6 @@ challengePassword		= A challenge password
 challengePassword_min		= 4
 challengePassword_max		= 20
 unstructuredName		= An optional company name
-[ usr_cert ]
-basicConstraints=CA:FALSE
-nsComment			= "OpenSSL Generated Certificate"
-subjectKeyIdentifier=hash
-authorityKeyIdentifier=keyid,issuer
-[ v3_ca ]
-subjectKeyIdentifier=hash
-authorityKeyIdentifier=keyid:always,issuer
-basicConstraints = CA:true
-[ crl_ext ]
-authorityKeyIdentifier=keyid:always
-[ proxy_cert_ext ]
-basicConstraints=CA:FALSE
-nsComment			= "OpenSSL Generated Certificate"
-subjectKeyIdentifier=hash
-authorityKeyIdentifier=keyid,issuer
-proxyCertInfo=critical,language:id-ppl-anyLanguage,pathlen:3,policy:foo
 [ tsa ]
 default_tsa = tsa_config1	# the default TSA section
 [ tsa_config1 ]
@@ -166,10 +159,30 @@ clock_precision_digits  = 0	# number of digits after dot. (optional)
 ordering		= yes	# Is ordering defined for timestamps?
 tsa_name		= yes	# Must the TSA name be included in the reply?
 ess_cert_id_chain	= no	# Must the ESS cert id chain be included?
-[ v3_req ]
-basicConstraints = CA:FALSE
-keyUsage = nonRepudiation, digitalSignature, keyEncipherment
-[req_ext]
+#[ usr_cert ]
+#basicConstraints=CA:FALSE
+#nsComment			= "OpenSSL Generated Certificate"
+#subjectKeyIdentifier=hash
+#authorityKeyIdentifier=keyid,issuer
+#[ crl_ext ]
+#authorityKeyIdentifier=keyid:always
+#[ proxy_cert_ext ]
+#basicConstraints=CA:FALSE
+#nsComment			= "OpenSSL Generated Certificate"
+#subjectKeyIdentifier=hash
+#authorityKeyIdentifier=keyid,issuer
+#proxyCertInfo=critical,language:id-ppl-anyLanguage,pathlen:3,policy:foo
+#[ v3_req ]
+#basicConstraints = CA:FALSE
+#keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+[ v3_ca ]
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid:always,issuer
+basicConstraints = CA:true
+[ req_ext ]
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid:always,issuer
+basicConstraints = CA:true
 subjectAltName = @alt_names
 [alt_names]
 EOF
