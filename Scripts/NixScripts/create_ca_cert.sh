@@ -60,13 +60,6 @@ awk '{printf("%s\r\n",$0)}' $INFONAME.nix.crt > $INFONAME.win.crt
 
 rm $NAME.md5
 
-#cp /opt/1C/v8.3/x86_64/crt/INFONAME.pem /opt/1C/v8.3/x86_64/cacert.pem 
-#echo >> /opt/1C/v8.3/x86_64/cacert.pem 
-#cat $INFONAME >> /opt/1C/v8.3/x86_64/cacert.pem 
-#cp /opt/1C/v8.3/x86_64/cacert.pem ./$CN/cacert.pem 
-                                                                                                                                           	
-#rm -f certificates 
-#ln -s $CN certificates
 }
 
 function getConfigFile() {
