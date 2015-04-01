@@ -19,7 +19,7 @@ public:
         delete v;
     }
 
-    uint32_t * operator[](int n)
+    uint32_t * operator[](uint32_t n)
     {
         return getDWord(n);
     }
@@ -122,7 +122,7 @@ public:
     }
 };
 
-template <int L>
+template <uint32_t L>
 class BitArrayT : public BitArray
 {
 public:
