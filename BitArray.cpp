@@ -122,7 +122,16 @@ public:
     }
 };
 
-int main()
+template <int L>
+class BitArrayT : public BitArray
+{
+public:
+    BitArrayT()
+        : BitArray(L)
+    {}
+};
+
+//int main()
 //{
 //    BitArray ba(2); ba.v[0] = ba.v[1] = 0;
 //
@@ -144,7 +153,7 @@ int main()
 //    ba.v[1] = 0x854052AF; assert(ba.numberOfSetBits(1) == 13);
 //    assert(ba.numberOfSetBits() == 20);
 //
-//    BitArray bm(2); bm.v[0] = 0xFF00AA; bm.v[1] = 0x00BF00;
+//    BitArrayT<2> bm; bm.v[0] = 0xFF00AA; bm.v[1] = 0x00BF00;
 //    *ba[0] = 0x00FF00; *ba[1] = 0xAA00CC;
 //    ba.and(bm);
 //    assert(*ba[0] == 0 && *ba[1] == 0);
