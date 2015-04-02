@@ -1,7 +1,6 @@
 #include <stdint.h>
 #include <assert.h>
 
-/////////////////////////////////////////////////////////////////////////////////////////
 class BitArray
 {
 public:
@@ -14,22 +13,42 @@ public:
         v = new uint32_t [size];
     }
 
+    BitArray(const BitArray &rhs)
+        : size(rhs.size)
+    {
+        v = new uint32_t [size];
+        assignTo(rhs);
+    }
+
+    BitArray & operator=(const BitArray &rhs)
+    {
+        assert(size == rhs.size);
+        assignTo(rhs);
+        return *this;
+    }
+
     ~BitArray()
     {
         delete v;
     }
 
-    uint32_t * operator[](uint32_t n)
+    uint32_t * operator[](uint32_t n) const 
     {
         return getDWord(n);
     }
 
-public:
+protected:
 
-    uint32_t * getDWord(uint32_t n)
+    uint32_t * getDWord(uint32_t n) const 
     {
         assert(n < size);
         return v+n;
+    }
+
+    void assignTo(const BitArray &rhs)
+    {
+        for(uint32_t i=0; i<size; ++i)
+            *getDWord(i) = *rhs.getDWord(i);
     }
 
 public:
@@ -65,11 +84,14 @@ public:
         return (*pByte >> n) & 1;
     }
 
+#pragma warning (push)
+#pragma warning (disable : 4146)
     void setBit(uint32_t n, uint32_t val)
     {
         uint32_t *pByte = getDWord(n/32);
         *pByte ^= (-val ^ *pByte) & (1 << n%32);
     }
+#pragma warning (pop)
 
     /////////////////////////////////////////////////
     // DWord operations
@@ -86,7 +108,13 @@ public:
         *pByte |= val;
     }
 
-    uint32_t numberOfSetBits(uint32_t n)
+    void xorDWord(uint32_t n, uint32_t val)
+    {
+        uint32_t *pByte = getDWord(n);
+        *pByte ^= val;
+    }
+
+    uint32_t numberOfSetBits(uint32_t n) const
     {
         uint32_t byte = * getDWord(n);
         byte = byte - ((byte >> 1) & 0x55555555);
@@ -97,7 +125,7 @@ public:
     /////////////////////////////////////////////////
     // Array operations
 
-    void and(const BitArray &rhs)
+    void andOp(const BitArray &rhs)
     {
         assert(size == rhs.size);
 
@@ -105,7 +133,7 @@ public:
             andDWord(i, rhs.v[i]);
     }
 
-    void or(const BitArray &rhs)
+    void orOp(const BitArray &rhs)
     {
         assert(size == rhs.size);
 
@@ -113,7 +141,15 @@ public:
             orDWord(i, rhs.v[i]);
     }
 
-    uint32_t numberOfSetBits()
+    void xorOp(const BitArray &rhs)
+    {
+        assert(size == rhs.size);
+
+        for(uint32_t i=0; i<size; ++i)
+            xorDWord(i, rhs.v[i]);
+    }
+
+    uint32_t numberOfSetBits() const
     {
         uint32_t ret = 0;
         for(uint32_t i=0; i<size; ++i)
@@ -131,10 +167,12 @@ public:
     {}
 };
 
-//int main()
+int main()
 //{
+//    /// BitArray Unit Tests ///
+//    //
 //    BitArray ba(2); ba.v[0] = ba.v[1] = 0;
-//
+//    
 //    ba.setBit(2); assert(ba.v[0] == 4);
 //    ba.setBit(32); assert(ba.v[1] == 1);
 //    ba.clearBit(2); assert(ba.v[0] == 0);
@@ -143,22 +181,34 @@ public:
 //    ba.toggleBit(63); /*assert(ba.v[0] == 2147483648L);*/ assert(ba.checkBit(63) == 1);
 //    ba.setBit(3,0); assert(ba.v[0] == 0); assert(ba.checkBit(3) == 0);
 //    ba.setBit(63,0); assert(ba.v[0] == 0); assert(ba.checkBit(63) == 0);
-//
+//    
 //    ba.v[0] = 0x1AB; ba.andDWord(0, 0x100); assert(ba.v[0] == 0x100);
 //    ba.v[1] = 0x88; ba.andDWord(1, 8); assert(ba.v[1] == 8);
 //    ba.v[0] = 0x100; ba.orDWord(0, 0x1AB); assert(ba.v[0] == 0x1AB);
 //    ba.v[1] = 0x80; ba.orDWord(1, 8); assert(ba.v[1] == 0x88);
-//
+//    
 //    ba.v[0] = 0x514841; assert(ba.numberOfSetBits(0) == 7);
 //    ba.v[1] = 0x854052AF; assert(ba.numberOfSetBits(1) == 13);
 //    assert(ba.numberOfSetBits() == 20);
-//
+//    
 //    BitArrayT<2> bm; bm.v[0] = 0xFF00AA; bm.v[1] = 0x00BF00;
 //    *ba[0] = 0x00FF00; *ba[1] = 0xAA00CC;
-//    ba.and(bm);
+//    ba.andOp(bm);
 //    assert(*ba[0] == 0 && *ba[1] == 0);
 //
 //    *ba[0] = 0x00CD00; *ba[1] = 0x880011;
-//    ba.or(bm);
+//    ba.orOp(bm);
 //    assert(*ba[0] == 0xFFCDAA && *ba[1] == 0x88BF11);
+//
+//    *ba[0] = 0xFF00AA; *ba[1] = 0x880011;
+//    ba.xorOp(bm);
+//    assert(*ba[0] == 0 && *ba[1] == 0x88BF11);
+//
+//    *ba[0] = 0xFF00AA; *ba[1] = 0x880011;
+//    BitArray bb(ba);
+//    assert(*ba[0] == *bb[0] && *ba[1] == *bb[1]);
+//
+//    *ba[0] = 0xCC00AA; *ba[1] = 0x880088;
+//    BitArray bc = ba;
+//    assert(*ba[0] == *bc[0] && *ba[1] == *bc[1]);
 //}
