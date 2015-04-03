@@ -1,22 +1,25 @@
 #include <stdint.h>
 #include <assert.h>
 
+template<typename T>
 class BitArray
 {
 public:
-    uint32_t *v;
-    const uint32_t size;
+    T *v;
+    const T size;
+    static const uint8_t chunkSize = sizeof(T)*8;
 
-    BitArray(uint32_t size =1)
+    BitArray(T size =1)
         : size(size)
+
     {
-        v = new uint32_t [size];
+        v = new T [size];
     }
 
     BitArray(const BitArray &rhs)
         : size(rhs.size)
     {
-        v = new uint32_t [size];
+        v = new T [size];
         assignTo(rhs);
     }
 
@@ -32,14 +35,14 @@ public:
         delete v;
     }
 
-    uint32_t * operator[](uint32_t n) const 
+    T * operator[](T n) const 
     {
-        return getDWord(n);
+        return getChunk(n);
     }
 
 protected:
 
-    uint32_t * getDWord(uint32_t n) const 
+    T * getChunk(T n) const 
     {
         assert(n < size);
         return v+n;
@@ -47,8 +50,8 @@ protected:
 
     void assignTo(const BitArray &rhs)
     {
-        for(uint32_t i=0; i<size; ++i)
-            *getDWord(i) = *rhs.getDWord(i);
+        for(T i=0; i<size; ++i)
+            *getChunk(i) = *rhs.getChunk(i);
     }
 
 public:
@@ -60,66 +63,68 @@ public:
     //bit = (number >> n) & 1; //check a bit
     //number ^= (-value ^ number) & (1 << n); //setting the nth bit to either 1 or 0
 
-    void setBit(uint32_t n)
+    void setBit(T n)
     {
-        uint32_t *pByte = getDWord(n/32);
-        *pByte |= 1 << n%32;
+        T *pByte = getChunk(n/chunkSize);
+        *pByte |= 1 << n%chunkSize;
     }
 
-    void clearBit(uint32_t n)
+    void clearBit(T n)
     {
-        uint32_t *pByte = getDWord(n/32);
-        *pByte &= ~(1 << n%32);;
+        T *pByte = getChunk(n/chunkSize);
+        *pByte &= ~(1 << n%chunkSize);;
     }
 
-    void toggleBit(uint32_t n)
+    void toggleBit(T n)
     {
-        uint32_t *pByte = getDWord(n/32);
-        *pByte ^= 1 << n%32;
+        T *pByte = getChunk(n/chunkSize);
+        *pByte ^= 1 << n%chunkSize;
     }
 
-    uint32_t checkBit(uint32_t n)
+    T checkBit(T n)
     {
-        uint32_t *pByte = getDWord(n/32);
+        T *pByte = getChunk(n/chunkSize);
         return (*pByte >> n) & 1;
     }
 
 #pragma warning (push)
 #pragma warning (disable : 4146)
-    void setBit(uint32_t n, uint32_t val)
+    void setBit(T n, T val)
     {
-        uint32_t *pByte = getDWord(n/32);
-        *pByte ^= (-val ^ *pByte) & (1 << n%32);
+        T *pByte = getChunk(n/chunkSize);
+        *pByte ^= (-val ^ *pByte) & (1 << n%chunkSize);
     }
 #pragma warning (pop)
 
     /////////////////////////////////////////////////
     // DWord operations
 
-    void andDWord(uint32_t n, uint32_t val)
+    void andChunk(T n, T val)
     {
-        uint32_t *pByte = getDWord(n);
+        T *pByte = getChunk(n);
         *pByte &= val;
     }
 
-    void orDWord(uint32_t n, uint32_t val)
+    void orChunk(T n, T val)
     {
-        uint32_t *pByte = getDWord(n);
+        T *pByte = getChunk(n);
         *pByte |= val;
     }
 
-    void xorDWord(uint32_t n, uint32_t val)
+    void xorChunk(T n, T val)
     {
-        uint32_t *pByte = getDWord(n);
+        T *pByte = getChunk(n);
         *pByte ^= val;
     }
 
-    uint32_t numberOfSetBits(uint32_t n) const
+    T numberOfSetBits(T n) const
     {
-        uint32_t byte = * getDWord(n);
-        byte = byte - ((byte >> 1) & 0x55555555);
-        byte = (byte & 0x33333333) + ((byte >> 2) & 0x33333333);
-        return (((byte + (byte >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
+        T byte = * getChunk(n);
+        unsigned int c;
+        for (c = 0; byte; c++)
+            byte &= byte - 1; // clear the least significant bit set
+
+        return c;
     }
 
     /////////////////////////////////////////////////
@@ -129,37 +134,37 @@ public:
     {
         assert(size == rhs.size);
 
-        for(uint32_t i=0; i<size; ++i)
-            andDWord(i, rhs.v[i]);
+        for(T i=0; i<size; ++i)
+            andChunk(i, rhs.v[i]);
     }
 
     void orOp(const BitArray &rhs)
     {
         assert(size == rhs.size);
 
-        for(uint32_t i=0; i<size; ++i)
-            orDWord(i, rhs.v[i]);
+        for(T i=0; i<size; ++i)
+            orChunk(i, rhs.v[i]);
     }
 
     void xorOp(const BitArray &rhs)
     {
         assert(size == rhs.size);
 
-        for(uint32_t i=0; i<size; ++i)
-            xorDWord(i, rhs.v[i]);
+        for(T i=0; i<size; ++i)
+            xorChunk(i, rhs.v[i]);
     }
 
-    uint32_t numberOfSetBits() const
+    T numberOfSetBits() const
     {
-        uint32_t ret = 0;
-        for(uint32_t i=0; i<size; ++i)
+        T ret = 0;
+        for(T i=0; i<size; ++i)
             ret += numberOfSetBits(i);
         return ret;
     }
 };
 
-template <uint32_t L>
-class BitArrayT : public BitArray
+template <typename T, uint8_t L>
+class BitArrayT : public BitArray<T>
 {
 public:
     BitArrayT()
@@ -167,11 +172,11 @@ public:
     {}
 };
 
-int main()
+//int main()
 //{
 //    /// BitArray Unit Tests ///
 //    //
-//    BitArray ba(2); ba.v[0] = ba.v[1] = 0;
+//    BitArray<uint32_t> ba(2); ba.v[0] = ba.v[1] = 0;
 //    
 //    ba.setBit(2); assert(ba.v[0] == 4);
 //    ba.setBit(32); assert(ba.v[1] == 1);
@@ -191,7 +196,7 @@ int main()
 //    ba.v[1] = 0x854052AF; assert(ba.numberOfSetBits(1) == 13);
 //    assert(ba.numberOfSetBits() == 20);
 //    
-//    BitArrayT<2> bm; bm.v[0] = 0xFF00AA; bm.v[1] = 0x00BF00;
+//    BitArrayT<uint32_t, 2> bm; bm.v[0] = 0xFF00AA; bm.v[1] = 0x00BF00;
 //    *ba[0] = 0x00FF00; *ba[1] = 0xAA00CC;
 //    ba.andOp(bm);
 //    assert(*ba[0] == 0 && *ba[1] == 0);
@@ -205,10 +210,50 @@ int main()
 //    assert(*ba[0] == 0 && *ba[1] == 0x88BF11);
 //
 //    *ba[0] = 0xFF00AA; *ba[1] = 0x880011;
-//    BitArray bb(ba);
+//    BitArray<uint32_t> bb(ba);
 //    assert(*ba[0] == *bb[0] && *ba[1] == *bb[1]);
 //
 //    *ba[0] = 0xCC00AA; *ba[1] = 0x880088;
-//    BitArray bc = ba;
+//    BitArray<uint32_t> bc = ba;
 //    assert(*ba[0] == *bc[0] && *ba[1] == *bc[1]);
+////////////////////////////////////////////////////////////////////////////
+    //BitArray<uint8_t> ba(2); ba.v[0] = ba.v[1] = 0;
+    //
+    //ba.setBit(2); assert(ba.v[0] == 4);
+    //ba.setBit(8); assert(ba.v[1] == 0x01);
+    //ba.clearBit(2); assert(ba.v[0] == 0);
+    //ba.clearBit(8); assert(ba.v[1] == 0);
+    //ba.toggleBit(3); assert(ba.v[0] == 8); assert(ba.checkBit(3) == 1);
+    //ba.setBit(3,0); assert(ba.v[0] == 0); assert(ba.checkBit(3) == 0);
+    //ba.setBit(12,0); assert(ba.v[0] == 0); assert(ba.checkBit(12) == 0);
+    //
+    //ba.v[0] = 0xAB; ba.andChunk(0, 0xA0); assert(ba.v[0] == 0xA0);
+    //ba.v[1] = 0x88; ba.andChunk(1, 8); assert(ba.v[1] == 8);
+    //ba.v[0] = 0x11; ba.orChunk(0, 0x11); assert(ba.v[0] == 0x11);
+    //ba.v[1] = 0x80; ba.orChunk(1, 8); assert(ba.v[1] == 0x88);
+    //
+    //ba.v[0] = 0x83; assert(ba.numberOfSetBits(0) == 3);
+    //ba.v[1] = 0x06; assert(ba.numberOfSetBits(1) == 2);
+    //assert(ba.numberOfSetBits() == 5);
+    //
+    //BitArrayT<uint8_t, 2> bm; bm.v[0] = 0xF0; bm.v[1] = 0x1F;
+    //*ba[0] = 0x00; *ba[1] = 0x1F;
+    //ba.andOp(bm);
+    //assert(*ba[0] == 0 && *ba[1] == 0x1F);
+
+    //*ba[0] = 0x0F; *ba[1] = 0x10;
+    //ba.orOp(bm);
+    //assert(*ba[0] == 0xFF && *ba[1] == 0x1F);
+    //
+    //*ba[0] = 0xF0; *ba[1] = 0x10;
+    //ba.xorOp(bm);
+    //assert(*ba[0] == 0 && *ba[1] == 0x0F);
+
+    //*ba[0] = 0xFF; *ba[1] = 0x88;
+    //BitArray<uint8_t> bb(ba);
+    //assert(*ba[0] == *bb[0] && *ba[1] == *bb[1]);
+
+    //*ba[0] = 0xAA; *ba[1] = 0x88;
+    //BitArray<uint8_t> bc = ba;
+    //assert(*ba[0] == *bc[0] && *ba[1] == *bc[1]);
 //}
