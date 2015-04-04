@@ -26,7 +26,7 @@ public:
 
     BitArray & operator=(const BitArray &rhs)
     {
-        if(size != rhs.size);
+        if(size != rhs.size)
             throw std::exception("BitArray sizes unequal");
 
         assignTo(rhs);
