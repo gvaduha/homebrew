@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <exception>
 #include <assert.h>
 
 template<typename T>
@@ -170,7 +171,7 @@ class BitArrayT : public BitArray<T>
 {
 public:
     BitArrayT()
-        : BitArray(L)
+        : BitArray<T>(L)
     {}
 };
 
@@ -219,43 +220,43 @@ public:
 //    BitArray<uint32_t> bc = ba;
 //    assert(*ba[0] == *bc[0] && *ba[1] == *bc[1]);
 ////////////////////////////////////////////////////////////////////////////
-    //BitArray<uint8_t> ba(2); ba.v[0] = ba.v[1] = 0;
-    //
-    //ba.setBit(2); assert(ba.v[0] == 4);
-    //ba.setBit(8); assert(ba.v[1] == 0x01);
-    //ba.clearBit(2); assert(ba.v[0] == 0);
-    //ba.clearBit(8); assert(ba.v[1] == 0);
-    //ba.toggleBit(3); assert(ba.v[0] == 8); assert(ba.checkBit(3) == 1);
-    //ba.setBit(3,0); assert(ba.v[0] == 0); assert(ba.checkBit(3) == 0);
-    //ba.setBit(12,0); assert(ba.v[0] == 0); assert(ba.checkBit(12) == 0);
-    //
-    //ba.v[0] = 0xAB; ba.andChunk(0, 0xA0); assert(ba.v[0] == 0xA0);
-    //ba.v[1] = 0x88; ba.andChunk(1, 8); assert(ba.v[1] == 8);
-    //ba.v[0] = 0x11; ba.orChunk(0, 0x11); assert(ba.v[0] == 0x11);
-    //ba.v[1] = 0x80; ba.orChunk(1, 8); assert(ba.v[1] == 0x88);
-    //
-    //ba.v[0] = 0x83; assert(ba.numberOfSetBits(0) == 3);
-    //ba.v[1] = 0x06; assert(ba.numberOfSetBits(1) == 2);
-    //assert(ba.numberOfSetBits() == 5);
-    //
-    //BitArrayT<uint8_t, 2> bm; bm.v[0] = 0xF0; bm.v[1] = 0x1F;
-    //*ba[0] = 0x00; *ba[1] = 0x1F;
-    //ba.andOp(bm);
-    //assert(*ba[0] == 0 && *ba[1] == 0x1F);
+//BitArray<uint8_t> ba(2); ba.v[0] = ba.v[1] = 0;
+//
+//ba.setBit(2); assert(ba.v[0] == 4);
+//ba.setBit(8); assert(ba.v[1] == 0x01);
+//ba.clearBit(2); assert(ba.v[0] == 0);
+//ba.clearBit(8); assert(ba.v[1] == 0);
+//ba.toggleBit(3); assert(ba.v[0] == 8); assert(ba.checkBit(3) == 1);
+//ba.setBit(3,0); assert(ba.v[0] == 0); assert(ba.checkBit(3) == 0);
+//ba.setBit(12,0); assert(ba.v[0] == 0); assert(ba.checkBit(12) == 0);
+//
+//ba.v[0] = 0xAB; ba.andChunk(0, 0xA0); assert(ba.v[0] == 0xA0);
+//ba.v[1] = 0x88; ba.andChunk(1, 8); assert(ba.v[1] == 8);
+//ba.v[0] = 0x11; ba.orChunk(0, 0x11); assert(ba.v[0] == 0x11);
+//ba.v[1] = 0x80; ba.orChunk(1, 8); assert(ba.v[1] == 0x88);
+//
+//ba.v[0] = 0x83; assert(ba.numberOfSetBits(0) == 3);
+//ba.v[1] = 0x06; assert(ba.numberOfSetBits(1) == 2);
+//assert(ba.numberOfSetBits() == 5);
+//
+//BitArrayT<uint8_t, 2> bm; bm.v[0] = 0xF0; bm.v[1] = 0x1F;
+//*ba[0] = 0x00; *ba[1] = 0x1F;
+//ba.andOp(bm);
+//assert(*ba[0] == 0 && *ba[1] == 0x1F);
 
-    //*ba[0] = 0x0F; *ba[1] = 0x10;
-    //ba.orOp(bm);
-    //assert(*ba[0] == 0xFF && *ba[1] == 0x1F);
-    //
-    //*ba[0] = 0xF0; *ba[1] = 0x10;
-    //ba.xorOp(bm);
-    //assert(*ba[0] == 0 && *ba[1] == 0x0F);
+//*ba[0] = 0x0F; *ba[1] = 0x10;
+//ba.orOp(bm);
+//assert(*ba[0] == 0xFF && *ba[1] == 0x1F);
+//
+//*ba[0] = 0xF0; *ba[1] = 0x10;
+//ba.xorOp(bm);
+//assert(*ba[0] == 0 && *ba[1] == 0x0F);
 
-    //*ba[0] = 0xFF; *ba[1] = 0x88;
-    //BitArray<uint8_t> bb(ba);
-    //assert(*ba[0] == *bb[0] && *ba[1] == *bb[1]);
+//*ba[0] = 0xFF; *ba[1] = 0x88;
+//BitArray<uint8_t> bb(ba);
+//assert(*ba[0] == *bb[0] && *ba[1] == *bb[1]);
 
-    //*ba[0] = 0xAA; *ba[1] = 0x88;
-    //BitArray<uint8_t> bc = ba;
-    //assert(*ba[0] == *bc[0] && *ba[1] == *bc[1]);
+//*ba[0] = 0xAA; *ba[1] = 0x88;
+//BitArray<uint8_t> bc = ba;
+//assert(*ba[0] == *bc[0] && *ba[1] == *bc[1]);
 //}
