@@ -1,5 +1,5 @@
+#include <stdexcept>
 #include <assert.h>
-#include <exception>
 #include <stdint.h>
 
 template<typename T>
@@ -27,7 +27,7 @@ public:
     BitArray & operator=(const BitArray &rhs)
     {
         if(size != rhs.size)
-            throw std::exception("BitArray sizes unequal");
+            throw std::invalid_argument("BitArray sizes unequal");
 
         assignTo(rhs);
         return *this;
@@ -48,7 +48,7 @@ protected:
     T * getChunk(uint32_t n) const 
     {
         if (n >= size)
-            throw std::exception("BitArray out of bounds");
+            throw std::invalid_argument("BitArray out of bounds");
 
         return v+n;
     }
@@ -173,13 +173,13 @@ class BitArrayT : public BitArray<T>
 {
 public:
     BitArrayT()
-        : BitArray(L)
+        : BitArray<T>(L)
     {}
 };
 
 /// BitArray Unit Tests ///
 //
-void main()
+int main()
 {
     BitArray<uint8_t> ba(2); ba.v[0] = ba.v[1] = 0;
     
@@ -263,4 +263,6 @@ void main()
     *ba32[0] = 0xCC00AA; *ba32[1] = 0x880088;
     BitArray<uint32_t> bc32 = ba32;
     assert(*ba32[0] == *bc32[0] && *ba32[1] == *bc32[1]);
+  
+  return 1;
 }
