@@ -122,10 +122,10 @@ public:
         *pByte ^= val;
     }
 
-    T numberOfSetBits(uint32_t n) const
+    uint32_t numberOfSetBits(uint32_t n) const
     {
         T byte = * getChunk(n);
-        unsigned int c;
+        uint32_t c;
         for (c = 0; byte; c++)
             byte &= byte - 1; // clear the least significant bit set
 
@@ -159,10 +159,10 @@ public:
             xorChunk(i, rhs.v[i]);
     }
 
-    T numberOfSetBits() const
+    uint32_t numberOfSetBits() const
     {
-        T ret = 0;
-        for(T i=0; i<size; ++i)
+        uint32_t ret = 0;
+        for(uint32_t i=0; i<size; ++i)
             ret += numberOfSetBits(i);
         return ret;
     }
