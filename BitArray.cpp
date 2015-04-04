@@ -1,16 +1,16 @@
-#include <stdint.h>
-#include <exception>
 #include <assert.h>
+#include <exception>
+#include <stdint.h>
 
 template<typename T>
 class BitArray
 {
 public:
     T *v;
-    const T size;
+    const uint32_t size;
     static const uint8_t chunkSize = sizeof(T)*8;
 
-    BitArray(T size =1)
+    BitArray(uint32_t size =1)
         : size(size)
 
     {
@@ -26,7 +26,9 @@ public:
 
     BitArray & operator=(const BitArray &rhs)
     {
-        assert(size == rhs.size);
+        if(size != rhs.size);
+            throw std::exception("BitArray sizes unequal");
+
         assignTo(rhs);
         return *this;
     }
@@ -36,16 +38,16 @@ public:
         delete v;
     }
 
-    T * operator[](T n) const 
+    T * operator[](uint32_t n) const 
     {
         return getChunk(n);
     }
 
 protected:
 
-    T * getChunk(T n) const 
+    T * getChunk(uint32_t n) const 
     {
-        if (n < size)
+        if (n >= size)
             throw std::exception("BitArray out of bounds");
 
         return v+n;
@@ -66,25 +68,25 @@ public:
     //bit = (number >> n) & 1; //check a bit
     //number ^= (-value ^ number) & (1 << n); //setting the nth bit to either 1 or 0
 
-    void setBit(T n)
+    void setBit(uint32_t n)
     {
         T *pByte = getChunk(n/chunkSize);
         *pByte |= 1 << n%chunkSize;
     }
 
-    void clearBit(T n)
+    void clearBit(uint32_t n)
     {
         T *pByte = getChunk(n/chunkSize);
         *pByte &= ~(1 << n%chunkSize);;
     }
 
-    void toggleBit(T n)
+    void toggleBit(uint32_t n)
     {
         T *pByte = getChunk(n/chunkSize);
         *pByte ^= 1 << n%chunkSize;
     }
 
-    T checkBit(T n)
+    T checkBit(uint32_t n)
     {
         T *pByte = getChunk(n/chunkSize);
         return (*pByte >> n) & 1;
@@ -92,7 +94,7 @@ public:
 
 #pragma warning (push)
 #pragma warning (disable : 4146)
-    void setBit(T n, T val)
+    void setBit(uint32_t n, uint8_t val)
     {
         T *pByte = getChunk(n/chunkSize);
         *pByte ^= (-val ^ *pByte) & (1 << n%chunkSize);
@@ -100,27 +102,27 @@ public:
 #pragma warning (pop)
 
     /////////////////////////////////////////////////
-    // DWord operations
+    // Chunk operations
 
-    void andChunk(T n, T val)
+    void andChunk(uint32_t n, T val)
     {
         T *pByte = getChunk(n);
         *pByte &= val;
     }
 
-    void orChunk(T n, T val)
+    void orChunk(uint32_t n, T val)
     {
         T *pByte = getChunk(n);
         *pByte |= val;
     }
 
-    void xorChunk(T n, T val)
+    void xorChunk(uint32_t n, T val)
     {
         T *pByte = getChunk(n);
         *pByte ^= val;
     }
 
-    T numberOfSetBits(T n) const
+    T numberOfSetBits(uint32_t n) const
     {
         T byte = * getChunk(n);
         unsigned int c;
@@ -166,97 +168,99 @@ public:
     }
 };
 
-template <typename T, uint8_t L>
+template <typename T, uint32_t L>
 class BitArrayT : public BitArray<T>
 {
 public:
     BitArrayT()
-        : BitArray<T>(L)
+        : BitArray(L)
     {}
 };
 
-//int main()
-//{
-//    /// BitArray Unit Tests ///
-//    //
-//    BitArray<uint32_t> ba(2); ba.v[0] = ba.v[1] = 0;
-//    
-//    ba.setBit(2); assert(ba.v[0] == 4);
-//    ba.setBit(32); assert(ba.v[1] == 1);
-//    ba.clearBit(2); assert(ba.v[0] == 0);
-//    ba.clearBit(32); assert(ba.v[1] == 0);
-//    ba.toggleBit(3); assert(ba.v[0] == 8); assert(ba.checkBit(3) == 1);
-//    ba.toggleBit(63); /*assert(ba.v[0] == 2147483648L);*/ assert(ba.checkBit(63) == 1);
-//    ba.setBit(3,0); assert(ba.v[0] == 0); assert(ba.checkBit(3) == 0);
-//    ba.setBit(63,0); assert(ba.v[0] == 0); assert(ba.checkBit(63) == 0);
-//    
-//    ba.v[0] = 0x1AB; ba.andDWord(0, 0x100); assert(ba.v[0] == 0x100);
-//    ba.v[1] = 0x88; ba.andDWord(1, 8); assert(ba.v[1] == 8);
-//    ba.v[0] = 0x100; ba.orDWord(0, 0x1AB); assert(ba.v[0] == 0x1AB);
-//    ba.v[1] = 0x80; ba.orDWord(1, 8); assert(ba.v[1] == 0x88);
-//    
-//    ba.v[0] = 0x514841; assert(ba.numberOfSetBits(0) == 7);
-//    ba.v[1] = 0x854052AF; assert(ba.numberOfSetBits(1) == 13);
-//    assert(ba.numberOfSetBits() == 20);
-//    
-//    BitArrayT<uint32_t, 2> bm; bm.v[0] = 0xFF00AA; bm.v[1] = 0x00BF00;
-//    *ba[0] = 0x00FF00; *ba[1] = 0xAA00CC;
-//    ba.andOp(bm);
-//    assert(*ba[0] == 0 && *ba[1] == 0);
+/// BitArray Unit Tests ///
 //
-//    *ba[0] = 0x00CD00; *ba[1] = 0x880011;
-//    ba.orOp(bm);
-//    assert(*ba[0] == 0xFFCDAA && *ba[1] == 0x88BF11);
-//
-//    *ba[0] = 0xFF00AA; *ba[1] = 0x880011;
-//    ba.xorOp(bm);
-//    assert(*ba[0] == 0 && *ba[1] == 0x88BF11);
-//
-//    *ba[0] = 0xFF00AA; *ba[1] = 0x880011;
-//    BitArray<uint32_t> bb(ba);
-//    assert(*ba[0] == *bb[0] && *ba[1] == *bb[1]);
-//
-//    *ba[0] = 0xCC00AA; *ba[1] = 0x880088;
-//    BitArray<uint32_t> bc = ba;
-//    assert(*ba[0] == *bc[0] && *ba[1] == *bc[1]);
-////////////////////////////////////////////////////////////////////////////
-//BitArray<uint8_t> ba(2); ba.v[0] = ba.v[1] = 0;
-//
-//ba.setBit(2); assert(ba.v[0] == 4);
-//ba.setBit(8); assert(ba.v[1] == 0x01);
-//ba.clearBit(2); assert(ba.v[0] == 0);
-//ba.clearBit(8); assert(ba.v[1] == 0);
-//ba.toggleBit(3); assert(ba.v[0] == 8); assert(ba.checkBit(3) == 1);
-//ba.setBit(3,0); assert(ba.v[0] == 0); assert(ba.checkBit(3) == 0);
-//ba.setBit(12,0); assert(ba.v[0] == 0); assert(ba.checkBit(12) == 0);
-//
-//ba.v[0] = 0xAB; ba.andChunk(0, 0xA0); assert(ba.v[0] == 0xA0);
-//ba.v[1] = 0x88; ba.andChunk(1, 8); assert(ba.v[1] == 8);
-//ba.v[0] = 0x11; ba.orChunk(0, 0x11); assert(ba.v[0] == 0x11);
-//ba.v[1] = 0x80; ba.orChunk(1, 8); assert(ba.v[1] == 0x88);
-//
-//ba.v[0] = 0x83; assert(ba.numberOfSetBits(0) == 3);
-//ba.v[1] = 0x06; assert(ba.numberOfSetBits(1) == 2);
-//assert(ba.numberOfSetBits() == 5);
-//
-//BitArrayT<uint8_t, 2> bm; bm.v[0] = 0xF0; bm.v[1] = 0x1F;
-//*ba[0] = 0x00; *ba[1] = 0x1F;
-//ba.andOp(bm);
-//assert(*ba[0] == 0 && *ba[1] == 0x1F);
+void main()
+{
+    BitArray<uint8_t> ba(2); ba.v[0] = ba.v[1] = 0;
+    
+    ba.setBit(2); assert(ba.v[0] == 4);
+    ba.setBit(8); assert(ba.v[1] == 0x01);
+    ba.clearBit(2); assert(ba.v[0] == 0);
+    ba.clearBit(8); assert(ba.v[1] == 0);
+    ba.toggleBit(3); assert(ba.v[0] == 8); assert(ba.checkBit(3) == 1);
+    ba.setBit(3,0); assert(ba.v[0] == 0); assert(ba.checkBit(3) == 0);
+    ba.setBit(12,0); assert(ba.v[0] == 0); assert(ba.checkBit(12) == 0);
+    
+    ba.v[0] = 0xAB; ba.andChunk(0, 0xA0); assert(ba.v[0] == 0xA0);
+    ba.v[1] = 0x88; ba.andChunk(1, 8); assert(ba.v[1] == 8);
+    ba.v[0] = 0x11; ba.orChunk(0, 0x11); assert(ba.v[0] == 0x11);
+    ba.v[1] = 0x80; ba.orChunk(1, 8); assert(ba.v[1] == 0x88);
+    
+    ba.v[0] = 0x83; assert(ba.numberOfSetBits(0) == 3);
+    ba.v[1] = 0x06; assert(ba.numberOfSetBits(1) == 2);
+    assert(ba.numberOfSetBits() == 5);
+    
+    BitArrayT<uint8_t, 2> bm; bm.v[0] = 0xF0; bm.v[1] = 0x1F;
+    *ba[0] = 0x00; *ba[1] = 0x1F;
+    ba.andOp(bm);
+    assert(*ba[0] == 0 && *ba[1] == 0x1F);
 
-//*ba[0] = 0x0F; *ba[1] = 0x10;
-//ba.orOp(bm);
-//assert(*ba[0] == 0xFF && *ba[1] == 0x1F);
-//
-//*ba[0] = 0xF0; *ba[1] = 0x10;
-//ba.xorOp(bm);
-//assert(*ba[0] == 0 && *ba[1] == 0x0F);
+    *ba[0] = 0x0F; *ba[1] = 0x10;
+    ba.orOp(bm);
+    assert(*ba[0] == 0xFF && *ba[1] == 0x1F);
+    
+    *ba[0] = 0xF0; *ba[1] = 0x10;
+    ba.xorOp(bm);
+    assert(*ba[0] == 0 && *ba[1] == 0x0F);
 
-//*ba[0] = 0xFF; *ba[1] = 0x88;
-//BitArray<uint8_t> bb(ba);
-//assert(*ba[0] == *bb[0] && *ba[1] == *bb[1]);
+    *ba[0] = 0xFF; *ba[1] = 0x88;
+    BitArray<uint8_t> bb(ba);
+    assert(*ba[0] == *bb[0] && *ba[1] == *bb[1]);
 
-//*ba[0] = 0xAA; *ba[1] = 0x88;
-//BitArray<uint8_t> bc = ba;
-//assert(*ba[0] == *bc[0] && *ba[1] == *bc[1]);
-//}
+    *ba[0] = 0xAA; *ba[1] = 0x88;
+    BitArray<uint8_t> bc = ba;
+    assert(*ba[0] == *bc[0] && *ba[1] == *bc[1]);
+
+    //////////////////////////////////////////////////////////////////
+
+    BitArray<uint32_t> ba32(2); ba32.v[0] = ba32.v[1] = 0;
+    
+    ba32.setBit(2); assert(ba32.v[0] == 4);
+    ba32.setBit(32); assert(ba32.v[1] == 1);
+    ba32.clearBit(2); assert(ba32.v[0] == 0);
+    ba32.clearBit(32); assert(ba32.v[1] == 0);
+    ba32.toggleBit(3); assert(ba32.v[0] == 8); assert(ba32.checkBit(3) == 1);
+    ba32.toggleBit(63); /*assert(ba32.v[0] == 2147483648L);*/ assert(ba32.checkBit(63) == 1);
+    ba32.setBit(3,0); assert(ba32.v[0] == 0); assert(ba32.checkBit(3) == 0);
+    ba32.setBit(63,0); assert(ba32.v[0] == 0); assert(ba32.checkBit(63) == 0);
+    
+    ba32.v[0] = 0x1AB; ba32.andChunk(0, 0x100); assert(ba32.v[0] == 0x100);
+    ba32.v[1] = 0x88;  ba32.andChunk(1, 8); assert(ba32.v[1] == 8);
+    ba32.v[0] = 0x100; ba32.orChunk(0, 0x1AB); assert(ba32.v[0] == 0x1AB);
+    ba32.v[1] = 0x80;  ba32.orChunk(1, 8); assert(ba32.v[1] == 0x88);
+    
+    ba32.v[0] = 0x514841; assert(ba32.numberOfSetBits(0) == 7);
+    ba32.v[1] = 0x854052AF; assert(ba32.numberOfSetBits(1) == 13);
+    assert(ba32.numberOfSetBits() == 20);
+    
+    BitArrayT<uint32_t, 2> bm32; bm32.v[0] = 0xFF00AA; bm32.v[1] = 0x00BF00;
+    *ba32[0] = 0x00FF00; *ba32[1] = 0xAA00CC;
+    ba32.andOp(bm32);
+    assert(*ba32[0] == 0 && *ba32[1] == 0);
+    
+    *ba32[0] = 0x00CD00; *ba32[1] = 0x880011;
+    ba32.orOp(bm32);
+    assert(*ba32[0] == 0xFFCDAA && *ba32[1] == 0x88BF11);
+    
+    *ba32[0] = 0xFF00AA; *ba32[1] = 0x880011;
+    ba32.xorOp(bm32);
+    assert(*ba32[0] == 0 && *ba32[1] == 0x88BF11);
+    
+    *ba32[0] = 0xFF00AA; *ba32[1] = 0x880011;
+    BitArray<uint32_t> bb32(ba32);
+    assert(*ba32[0] == *bb32[0] && *ba32[1] == *bb32[1]);
+    
+    *ba32[0] = 0xCC00AA; *ba32[1] = 0x880088;
+    BitArray<uint32_t> bc32 = ba32;
+    assert(*ba32[0] == *bc32[0] && *ba32[1] == *bc32[1]);
+}
