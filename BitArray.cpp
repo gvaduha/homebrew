@@ -44,7 +44,9 @@ protected:
 
     T * getChunk(T n) const 
     {
-        assert(n < size);
+        if (n < size)
+            throw std::exception("BitArray out of bounds");
+
         return v+n;
     }
 
