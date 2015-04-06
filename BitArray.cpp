@@ -15,6 +15,7 @@ public:
 
     {
         v = new T [size];
+        memset(v,0,size);
     }
 
     BitArray(const BitArray &rhs)
@@ -26,6 +27,9 @@ public:
 
     BitArray & operator=(const BitArray &rhs)
     {
+        if (this == &rhs)
+            return *this;
+
         if(size != rhs.size)
             throw std::invalid_argument("BitArray sizes unequal");
 
@@ -55,8 +59,7 @@ protected:
 
     void assignTo(const BitArray &rhs)
     {
-        for(T i=0; i<size; ++i)
-            *getChunk(i) = *rhs.getChunk(i);
+        memcpy(v, rhs.v, size);
     }
 
 public:
