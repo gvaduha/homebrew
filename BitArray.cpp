@@ -61,6 +61,14 @@ public:
         return !operator==(rhs);
     }
 
+    //TODO:
+    //R K::operator ~();
+    //R K::operator &(S b);
+    //R K::operator |(S b);
+    //R K::operator ^(S b);
+    //R K::operator <<(S b);
+    //R K::operator >>(S b);
+
 protected:
 
     T * getChunk(uint32_t n) const 
@@ -140,6 +148,12 @@ public:
         *pByte ^= val;
     }
 
+    void notChunk(uint32_t n)
+    {
+        T *pByte = getChunk(n);
+        *pByte ~= *pByte;
+    }
+
     uint32_t numberOfSetBits(uint32_t n) const
     {
         T byte = * getChunk(n);
@@ -153,29 +167,92 @@ public:
     /////////////////////////////////////////////////
     // Array operations
 
-    void andOp(const BitArray &rhs)
-    {
-        assert(size == rhs.size);
+    /*
+    size_t len = size;
+    size_t const loadsPerCycle = 4;
+    size_t iters = len / sizeof(long long) / loadsPerCycle;
 
-        for(T i=0; i<size; ++i)
-            andChunk(i, rhs.v[i]);
+    long long *ptr = (long long *) v;
+    long long *ptr2 = (long long *) rhs.v;
+
+    for (size_t i = 0; i < iters; ++i) {
+    size_t j = loadsPerCycle*i;
+    ptr[j  ] OPER= ptr2[j  ];
+    ptr[j+1] OPER= ptr2[j+1];
+    ptr[j+2] OPER= ptr2[j+2];
+    ptr[j+3] OPER= ptr2[j+3];
     }
+
+    for (size_t i = iters * loadsPerCycle; i < len / sizeof(long long); ++i) {
+    ptr[i] OPER= ptr2[i];
+    }
+
+    for (size_t i = (len / sizeof(long long)) * sizeof(long long); i < len; ++i) {
+    v[i] OPER= rhs.v[i];
+    }
+    */
+#define FAST_ARRAY_OP(OPER) \
+        size_t len = size * chunkByteSize; \
+        size_t const loadsPerCycle = 4; \
+        size_t iters = len / sizeof(long long) / loadsPerCycle; \
+        \
+        long long *ptr = (long long *) v; \
+        long long *ptr2 = (long long *) rhs.v; \
+        \
+        for (size_t i = 0; i < iters; ++i) { \
+            size_t j = loadsPerCycle*i; \
+            ptr[j  ] OPER= ptr2[j  ]; \
+            ptr[j+1] OPER= ptr2[j+1]; \
+            ptr[j+2] OPER= ptr2[j+2]; \
+            ptr[j+3] OPER= ptr2[j+3]; \
+        } \
+        \
+        for (size_t i = iters * loadsPerCycle; i < len / sizeof(long long); ++i) { \
+            ptr[i] OPER= ptr2[i]; \
+        } \
+        \
+        for (size_t i = (len / sizeof(long long)) * sizeof(long long); i < len; i+=chunkByteSize) { \
+            v[i/chunkByteSize] OPER= rhs.v[i/chunkByteSize]; \
+        }
+
+     void andOp(const BitArray &rhs)
+     {
+        size_t len = size * chunkByteSize;
+        size_t const loadsPerCycle = 4;
+        size_t iters = len / sizeof(long long) / loadsPerCycle;
+        
+        long long *ptr = (long long *) v;
+        long long *ptr2 = (long long *) rhs.v;
+        
+        for (size_t i = 0; i < iters; ++i) {
+            size_t j = loadsPerCycle*i;
+            ptr[j  ] &= ptr2[j  ];
+            ptr[j+1] &= ptr2[j+1];
+            ptr[j+2] &= ptr2[j+2];
+            ptr[j+3] &= ptr2[j+3];
+        }
+        
+        for (size_t i = iters * loadsPerCycle; i < len / sizeof(long long); ++i) {
+            ptr[i] &= ptr2[i];
+        }
+        
+        for (size_t i = (len / sizeof(long long)) * sizeof(long long); i < len; i+=chunkByteSize) {
+            v[i/chunkByteSize] &= rhs.v[i/chunkByteSize];
+        }
+     }
 
     void orOp(const BitArray &rhs)
     {
-        assert(size == rhs.size);
-
-        for(T i=0; i<size; ++i)
-            orChunk(i, rhs.v[i]);
+        FAST_ARRAY_OP(|)
     }
 
     void xorOp(const BitArray &rhs)
     {
-        assert(size == rhs.size);
-
-        for(T i=0; i<size; ++i)
-            xorChunk(i, rhs.v[i]);
+        FAST_ARRAY_OP(^)
     }
+
+    //TODO:
+    //void notOp()
 
     uint32_t numberOfSetBits() const
     {
@@ -195,8 +272,44 @@ public:
     {}
 };
 
-/// BitArray Unit Tests ///
+//////////////////////////////////////////////////////////////////
+/// BitArray Unit Tests
 //
+
+template<typename T>
+T getResult(T val)
+{
+    T ret=0;
+
+    for (uint8_t i=0; i<sizeof(T); ++i)
+        ret += val << 8*i;
+
+    return ret;
+}
+
+template<typename T>
+void checkBigArray(size_t size)
+{
+    BitArray<T> lx(size);
+    BitArray<T> ly(size);
+    memset(ly.v, 0xCC, size*sizeof(T)); // 1100 1100 ...
+
+    memset(lx.v, 0xAA, size*sizeof(T)); // 1010 1010 ...
+    lx.andOp(ly);
+    assert(*lx[0] == getResult<T>(0x88));
+    assert(*lx[size-1] == getResult<T>(0x88));
+
+    memset(lx.v, 0xAA, size*sizeof(T)); // 1010 1010 ...
+    lx.orOp(ly);
+    assert(*lx[0] == getResult<T>(0xEE));
+    assert(*lx[size-1] == getResult<T>(0xEE));
+
+    memset(lx.v, 0xAA, size*sizeof(T)); // 1010 1010 ...
+    lx.xorOp(ly);
+    assert(*lx[0] == getResult<T>(0x66));
+    assert(*lx[size-1] == getResult<T>(0x66));
+}
+
 int main()
 {
     BitArray<uint8_t> ba(2); ba.v[0] = ba.v[1] = 0;
@@ -242,7 +355,7 @@ int main()
     assert(ba == bc);
     assert(bc != bb);
 
-    //////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////
 
     BitArray<uint32_t> ba32(2); ba32.v[0] = ba32.v[1] = 0;
 
@@ -287,6 +400,18 @@ int main()
 
     assert(ba32 == bc32);
     assert(bc32 != bb32);
+
+    // Big array tests /////////////////////////////////////////////////////
+
+    const size_t max_vector_size = 32000;
+
+    for (size_t i=1; i<max_vector_size; ++i)
+    {
+        checkBigArray<uint8_t>(i);
+        checkBigArray<uint16_t>(i);
+        checkBigArray<uint32_t>(i);
+        checkBigArray<uint64_t>(i);
+    }
 
     return 1;
 }
