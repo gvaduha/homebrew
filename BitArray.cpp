@@ -177,18 +177,18 @@ public:
 
     for (size_t i = 0; i < iters; ++i) {
     size_t j = loadsPerCycle*i;
-    ptr[j  ] OPER= ptr2[j  ];
-    ptr[j+1] OPER= ptr2[j+1];
-    ptr[j+2] OPER= ptr2[j+2];
-    ptr[j+3] OPER= ptr2[j+3];
+    ptr[j  ] OPER##= ptr2[j  ];
+    ptr[j+1] OPER##= ptr2[j+1];
+    ptr[j+2] OPER##= ptr2[j+2];
+    ptr[j+3] OPER##= ptr2[j+3];
     }
 
     for (size_t i = iters * loadsPerCycle; i < len / sizeof(long long); ++i) {
-    ptr[i] OPER= ptr2[i];
+    ptr[i] OPER##= ptr2[i];
     }
 
     for (size_t i = (len / sizeof(long long)) * sizeof(long long); i < len; i+=chunkByteSize) {
-    v[i/chunkByteSize] OPER= rhs.v[i/chunkByteSize];
+    v[i/chunkByteSize] OPER##= rhs.v[i/chunkByteSize];
     }
     */
 #define FAST_ARRAY_OP(OPER) \
@@ -201,18 +201,18 @@ public:
         \
         for (size_t i = 0; i < iters; ++i) { \
             size_t j = loadsPerCycle*i; \
-            ptr[j  ] OPER= ptr2[j  ]; \
-            ptr[j+1] OPER= ptr2[j+1]; \
-            ptr[j+2] OPER= ptr2[j+2]; \
-            ptr[j+3] OPER= ptr2[j+3]; \
+            ptr[j  ] OPER##= ptr2[j  ]; \
+            ptr[j+1] OPER##= ptr2[j+1]; \
+            ptr[j+2] OPER##= ptr2[j+2]; \
+            ptr[j+3] OPER##= ptr2[j+3]; \
         } \
         \
         for (size_t i = iters * loadsPerCycle; i < len / sizeof(long long); ++i) { \
-            ptr[i] OPER= ptr2[i]; \
+            ptr[i] OPER##= ptr2[i]; \
         } \
         \
         for (size_t i = (len / sizeof(long long)) * sizeof(long long); i < len; i+=chunkByteSize) { \
-            v[i/chunkByteSize] OPER= rhs.v[i/chunkByteSize]; \
+            v[i/chunkByteSize] OPER##= rhs.v[i/chunkByteSize]; \
         }
 
      void andOp(const BitArray &rhs)
