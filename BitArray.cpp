@@ -112,10 +112,10 @@ public:
         *pByte ^= 1 << n%chunkBitSize;
     }
 
-    T checkBit(uint32_t n)
+    bool isBitSet(uint32_t n)
     {
         T *pByte = getChunk(n/chunkBitSize);
-        return (*pByte >> n) & 1;
+        return (*pByte >> n%chunkBitSize) & 1;
     }
 
 #pragma warning (push)
