@@ -14,3 +14,7 @@ do
 	egrep 'h3>|h4>|p>' index.php@id\=$BOOKID\&pages\=$i >> _book.html
 done
 echo '</body></html>' >> $BOOKNAME
+
+#BOOKROOT="http://litread.me/pages/439821/480000-481000"
+#wget $BOOKROOT\?page=$i
+#egrep 'h3>|h4>|p>' 480000-481000@page\=$i >> _book.html
