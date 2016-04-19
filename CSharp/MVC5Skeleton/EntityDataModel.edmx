@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="EntityDataModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="EntityDataModelStoreContainer">
+    <EntitySet Name="VirtualRoomSet" EntityType="EntityDataModel.Store.VirtualRoomSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="DocumentSet" EntityType="EntityDataModel.Store.DocumentSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="UserSet" EntityType="EntityDataModel.Store.UserSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="DocumentSet_BinaryDocument" EntityType="EntityDataModel.Store.DocumentSet_BinaryDocument" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="VirtualRoomDocument" Association="EntityDataModel.Store.VirtualRoomDocument">
+      <End Role="VirtualRoom" EntitySet="VirtualRoomSet" />
+      <End Role="Document" EntitySet="DocumentSet" />
+    </AssociationSet>
+    <AssociationSet Name="VirtualRoomUser" Association="EntityDataModel.Store.VirtualRoomUser">
+      <End Role="VirtualRoom" EntitySet="VirtualRoomSet" />
+      <End Role="User" EntitySet="UserSet" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BinaryDocument_inherits_Document" Association="EntityDataModel.Store.FK_BinaryDocument_inherits_Document">
+      <End Role="Document" EntitySet="DocumentSet" />
+      <End Role="BinaryDocument" EntitySet="DocumentSet_BinaryDocument" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="VirtualRoomSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="DocumentSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Brief" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Created" Type="datetime" Nullable="false" />
+    <Property Name="Modified" Type="datetime" Nullable="false" />
+    <Property Name="VirtualRoomId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="VirtualRoomId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="DocumentSet_BinaryDocument">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Data" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Id" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="VirtualRoomDocument">
+    <End Role="VirtualRoom" Type="EntityDataModel.Store.VirtualRoomSet" Multiplicity="1" />
+    <End Role="Document" Type="EntityDataModel.Store.DocumentSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="VirtualRoom">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Document">
+        <PropertyRef Name="VirtualRoomId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="VirtualRoomUser">
+    <End Role="VirtualRoom" Type="EntityDataModel.Store.VirtualRoomSet" Multiplicity="1" />
+    <End Role="User" Type="EntityDataModel.Store.UserSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="VirtualRoom">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="VirtualRoomId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BinaryDocument_inherits_Document">
+    <End Role="Document" Type="EntityDataModel.Store.DocumentSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="BinaryDocument" Type="EntityDataModel.Store.DocumentSet_BinaryDocument" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Document">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="BinaryDocument">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="EntityDataModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="EntityDataModelContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="VirtualRoomSet" EntityType="EntityDataModel.VirtualRoom" />
+          <EntitySet Name="DocumentSet" EntityType="EntityDataModel.Document" />
+          <EntitySet Name="UserSet" EntityType="EntityDataModel.User" />
+          <AssociationSet Name="VirtualRoomDocument" Association="EntityDataModel.VirtualRoomDocument">
+            <End Role="VirtualRoom" EntitySet="VirtualRoomSet" />
+            <End Role="Document" EntitySet="DocumentSet" />
+          </AssociationSet>
+          <AssociationSet Name="VirtualRoomUser" Association="EntityDataModel.VirtualRoomUser">
+            <End Role="VirtualRoom" EntitySet="VirtualRoomSet" />
+            <End Role="User" EntitySet="UserSet" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="VirtualRoom">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <NavigationProperty Name="Document" Relationship="EntityDataModel.VirtualRoomDocument" FromRole="VirtualRoom" ToRole="Document" />
+          <NavigationProperty Name="User" Relationship="EntityDataModel.VirtualRoomUser" FromRole="VirtualRoom" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Document">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Brief" Type="String" Nullable="true" />
+          <Property Name="Created" Type="DateTime" Nullable="false" />
+          <Property Name="Modified" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="VirtualRoom" Relationship="EntityDataModel.VirtualRoomDocument" FromRole="Document" ToRole="VirtualRoom" />
+          <Property Name="VirtualRoomId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <NavigationProperty Name="VirtualRoom" Relationship="EntityDataModel.VirtualRoomUser" FromRole="User" ToRole="VirtualRoom" />
+          <Property Name="VirtualRoomId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BinaryDocument" BaseType="EntityDataModel.Document">
+          <Property Name="Data" Type="String" Nullable="false" />
+        </EntityType>
+        <Association Name="VirtualRoomDocument">
+          <End Type="EntityDataModel.VirtualRoom" Role="VirtualRoom" Multiplicity="1" />
+          <End Type="EntityDataModel.Document" Role="Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VirtualRoom">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="VirtualRoomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="VirtualRoomUser">
+          <End Type="EntityDataModel.VirtualRoom" Role="VirtualRoom" Multiplicity="1" />
+          <End Type="EntityDataModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VirtualRoom">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="VirtualRoomId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="EntityDataModelStoreContainer" CdmEntityContainer="EntityDataModelContainer">
+    <EntitySetMapping Name="VirtualRoomSet">
+      <EntityTypeMapping TypeName="IsTypeOf(EntityDataModel.VirtualRoom)">
+        <MappingFragment StoreEntitySet="VirtualRoomSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DocumentSet">
+      <EntityTypeMapping TypeName="IsTypeOf(EntityDataModel.Document)">
+        <MappingFragment StoreEntitySet="DocumentSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Brief" ColumnName="Brief" />
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="Modified" ColumnName="Modified" />
+          <ScalarProperty Name="VirtualRoomId" ColumnName="VirtualRoomId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(EntityDataModel.BinaryDocument)">
+        <MappingFragment StoreEntitySet="DocumentSet_BinaryDocument">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Data" ColumnName="Data" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserSet">
+      <EntityTypeMapping TypeName="IsTypeOf(EntityDataModel.User)">
+        <MappingFragment StoreEntitySet="UserSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="VirtualRoomId" ColumnName="VirtualRoomId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

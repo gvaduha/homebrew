@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="Linq2SqlDataClasses">
+  <DataContextMoniker Name="/Linq2SqlDataClassesDataContext" />
+  <nestedChildShapes>
+    <classShape Id="bf99e734-0642-4bdf-817f-7b05daa601b4" absoluteBounds="0.5, 0.5, 2, 1.0961531575520833">
+      <DataClassMoniker Name="/Linq2SqlDataClassesDataContext/VirtualRoomSet" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e79f10f4-7f58-42bd-ac58-a8693f230ac4" absoluteBounds="0.51499999999999968, 0.96, 1.9700000000000002, 0.53615315755208326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="99c23244-b052-45af-848c-34f2757f0ff8" absoluteBounds="0.5, 2.375, 2, 1.26050048828125">
+      <DataClassMoniker Name="/Linq2SqlDataClassesDataContext/UserSet" />
+      <nestedChildShapes>
+        <elementListCompartment Id="33e1a47b-f5c0-4a68-bd72-128705558e96" absoluteBounds="0.51499999999999968, 2.835, 1.9700000000000002, 0.70050048828125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(1.5 : 1.59615315755208); (1.5 : 2.375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/Linq2SqlDataClassesDataContext/VirtualRoomSet/VirtualRoomSet_UserSet" />
+      <nodes>
+        <classShapeMoniker Id="bf99e734-0642-4bdf-817f-7b05daa601b4" />
+        <classShapeMoniker Id="99c23244-b052-45af-848c-34f2757f0ff8" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="b16eafe5-6be0-48c7-beef-575cb83827b8" absoluteBounds="3.375, 0.5, 2, 1.75354248046875">
+      <DataClassMoniker Name="/Linq2SqlDataClassesDataContext/DocumentSet" />
+      <nestedChildShapes>
+        <elementListCompartment Id="d652f35d-9c99-426a-95db-7d44eb9940ee" absoluteBounds="3.39, 0.96, 1.9700000000000002, 1.19354248046875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.5 : 1.04807657877604); (3.375 : 1.04807657877604)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/Linq2SqlDataClassesDataContext/VirtualRoomSet/VirtualRoomSet_DocumentSet" />
+      <nodes>
+        <classShapeMoniker Id="bf99e734-0642-4bdf-817f-7b05daa601b4" />
+        <classShapeMoniker Id="b16eafe5-6be0-48c7-beef-575cb83827b8" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="d7b619c4-748b-4687-94e3-dbb291109d82" absoluteBounds="3.375, 2.625, 2, 1.0961531575520833">
+      <DataClassMoniker Name="/Linq2SqlDataClassesDataContext/DocumentSet_BinaryDocument" />
+      <nestedChildShapes>
+        <elementListCompartment Id="9c034457-eb69-46c9-bedf-2b4d7abe7f9b" absoluteBounds="3.3899999999999997, 3.085, 1.9700000000000002, 0.53615315755208326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(4.375 : 2.25354248046875); (4.375 : 2.625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/Linq2SqlDataClassesDataContext/DocumentSet/DocumentSet_DocumentSet_BinaryDocument" />
+      <nodes>
+        <classShapeMoniker Id="b16eafe5-6be0-48c7-beef-575cb83827b8" />
+        <classShapeMoniker Id="d7b619c4-748b-4687-94e3-dbb291109d82" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>
