@@ -58,11 +58,11 @@ namespace MVC5Skeleton
             //   appId: "",
             //   appSecret: "");
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = "484537506955-al6e3lkg507r27h3q572b33ell2hcsjl.apps.googleusercontent.com",
+                ClientSecret = "43P2ItI76GAIuQJJjJLgXJuc"
+            });
         }
     }
 }
