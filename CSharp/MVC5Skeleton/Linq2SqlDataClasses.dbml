@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="MainDatabase" Class="Linq2SqlDataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\MainDatabase.mdf;Integrated Security=True;MultipleActiveResultSets=True;Application Name=EntityFramework" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="MainDatabaseConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.VirtualRoomSet" Member="VirtualRoomSets">
+    <Type Name="VirtualRoomSet">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="VirtualRoomSet_UserSet" Member="UserSets" ThisKey="Id" OtherKey="VirtualRoomId" Type="UserSet" />
+      <Association Name="VirtualRoomSet_DocumentSet" Member="DocumentSets" ThisKey="Id" OtherKey="VirtualRoomId" Type="DocumentSet" />
+    </Type>
+  </Table>
+  <Table Name="dbo.UserSet" Member="UserSets">
+    <Type Name="UserSet">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="VirtualRoomId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="VirtualRoomSet_UserSet" Member="VirtualRoomSet" ThisKey="VirtualRoomId" OtherKey="Id" Type="VirtualRoomSet" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DocumentSet" Member="DocumentSets">
+    <Type Name="DocumentSet">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Brief" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Created" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Modified" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="VirtualRoomId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="DocumentSet_DocumentSet_BinaryDocument" Member="DocumentSet_BinaryDocument" ThisKey="Id" OtherKey="Id" Type="DocumentSet_BinaryDocument" Cardinality="One" />
+      <Association Name="VirtualRoomSet_DocumentSet" Member="VirtualRoomSet" ThisKey="VirtualRoomId" OtherKey="Id" Type="VirtualRoomSet" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DocumentSet_BinaryDocument" Member="DocumentSet_BinaryDocuments">
+    <Type Name="DocumentSet_BinaryDocument">
+      <Column Name="Data" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="DocumentSet_DocumentSet_BinaryDocument" Member="DocumentSet" ThisKey="Id" OtherKey="Id" Type="DocumentSet" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+</Database>
