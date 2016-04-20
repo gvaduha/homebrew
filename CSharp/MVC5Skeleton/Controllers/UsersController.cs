@@ -10,6 +10,7 @@ using MVC5Skeleton;
 
 namespace MVC5Skeleton.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
         private EntityDataModelContainer db = new EntityDataModelContainer();
