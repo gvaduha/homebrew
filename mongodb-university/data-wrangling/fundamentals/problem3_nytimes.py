@@ -18,6 +18,9 @@ articles (by view count) from the last day, and return the following data:
 All your changes should be in the article_overview function.
 The rest of functions are provided for your convenience, if you want to access
 the API by yourself.
+
+API Key for the Most Popular API: 830fd2ec6e3c4b8995fe0f04db899fc6
+API Key for the Article Search API: 830fd2ec6e3c4b8995fe0f04db899fc6
 """
 import json
 import codecs
@@ -39,7 +42,13 @@ def article_overview(kind, period):
     data = get_from_file(kind, period)
     titles = []
     urls =[]
-    # YOUR CODE HERE
+
+    for record in data:
+        titles.append({record['section']: record['title']})
+        for media in record['media']:
+            for meta in media['media-metadata']:
+                if meta['format'] == 'Standard Thumbnail':
+                    urls.append(meta['url'])
 
     return (titles, urls)
 
