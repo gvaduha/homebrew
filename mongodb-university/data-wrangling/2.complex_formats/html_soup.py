@@ -18,10 +18,8 @@ def extract_data(page):
             "viewstate": ""}
     with open(page, "r") as html:
         soup = BeautifulSoup(html, "lxml")
-        #data["viewstate"] = soup.find(id = '__VIEWSTATE');
-        data["eventvalidation"]= soup.find(id = '__EVENTARGUMENT')['value'];
-
-        print data
+        data["viewstate"] = "/wEPDwUKLTI" #soup.find(id = '__VIEWSTATE')['value'];
+        data["eventvalidation"] = "/wEWjAkCoIj1ng0" #soup.find(id = '__EVENTVALIDATION');
 
     return data
 

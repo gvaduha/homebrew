@@ -11,7 +11,7 @@ import os
 
 DATADIR = ""
 DATAFILE = "beatles-diskography.csv"
-LINECOUNT = 100
+LINECOUNT = 10
 
 
 def parse_file(datafile):
