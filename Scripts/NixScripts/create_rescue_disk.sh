@@ -16,7 +16,7 @@ mount $part /mnt
 sudo grub-install --force --root-directory=/mnt $part
 
 # write grub.cfg
-cat > /mnt/boot/grub/grub.cfg << EOF
+cat > /mnt/boot/grub/grub.cfg << ENDOFGRUB
 
 if loadfont /boot/grub/font.pf2 ; then
 set gfxmode=auto
@@ -51,7 +51,9 @@ linux (loop)/casper/vmlinuz.efi boot=casper iso-scan/filename=gparted.iso quiet 
 initrd (loop)/casper/initrd.lz
 }
 
-EOF
+ENDOFGRUB
+
+mkdir /mnt/isos
 
 umount $part
 
