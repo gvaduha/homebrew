@@ -8,6 +8,8 @@ part=$device$partnum
 
 echo "Installing to $part"
 
+#fdisk $part --type 83 #make shure it's Linux partition
+
 mkfs.ext4 $part
 
 mount $part /mnt
