@@ -8,7 +8,11 @@ part=$device$partnum
 
 echo "Installing to $part"
 
-#fdisk $part --type 83 #make shure it's Linux partition
+#ensudshure it's Linux partition (0x83)
+echo "t
+$parnum
+83
+w" | fdisk $device
 
 mkfs.ext4 $part
 
