@@ -31,6 +31,9 @@ fi
 set menu_color_normal=white/black
 set menu_color_highlight=black/light-gray
 
+set default=0
+set timeout=10
+
 #menuentry "Try Lubuntu without installing" {
 #set gfxpayload=keep
 #linux/casper/vmlinuz.efi  file=/cdrom/preseed/lubuntu.seed boot=casper quiet splash ---
@@ -48,9 +51,9 @@ set menu_color_highlight=black/light-gray
 #}
 
 menuentry "GParted Live" {
-loopback loop (hostdisk/$device,$partnum)/isos
-linux (loop)/casper/vmlinuz.efi boot=casper iso-scan/filename=gparted.iso quiet splash
-initrd (loop)/casper/initrd.lz
+  loopback loop (hostdisk/$device,$partnum)/isos/gparted.iso
+  linux (loop)/casper/vmlinuz.efi boot=casper iso-scan/filename=/isos/gparted.iso quiet splash
+  initrd (loop)/casper/initrd.lz
 }
 
 ENDOFGRUB
