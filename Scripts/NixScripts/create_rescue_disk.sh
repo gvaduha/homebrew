@@ -1,6 +1,11 @@
 #! /usr/bin/env bash
 #
 # Make bootable device
+#
+# busybox
+#modprobe loop
+#losetup /dev/loop0 file.iso
+#mount /dev/loop0 /mnt/iso -t iso9660
 
 device=/dev/sdc
 partnum=2
@@ -17,6 +22,8 @@ w" | fdisk $device
 mkfs.ext4 $part
 
 mount $part /mnt
+
+#deviceid=`ls -l /dev/disk/by-uuid/ | grep "$device" | awk '{ print $9; }'`
 
 # force in case of "do not proceed with blocklists"
 sudo grub-install --force --root-directory=/mnt $part
@@ -54,10 +61,17 @@ set timeout=10
 #    ntldr ($root)/bootmgr
 #}
 
-menuentry "GParted Live" {
-  loopback loop (hostdisk/$device,$partnum)/isos/gparted.iso
-  linux (loop)/casper/vmlinuz.efi boot=casper iso-scan/filename=/isos/gparted.iso quiet splash
+menuentry "Lubuntu" {
+  loopback loop (usb0,$partnum)/isos/lubuntu.iso
+  linux (loop)/casper/vmlinuz.efi boot=casper iso-scan/filename=/isos/lubuntu.iso noprompt
   initrd (loop)/casper/initrd.lz
+}
+
+menuentry "GParted Live" {
+  loopback loop (usb0,$partnum)/isos/gparted.iso
+  linux (loop)/live/vmlinuz boot=live iso-scan/filename=/isos/gparted.iso
+#noswap noeject username=user union=overlay config components quiet ip= net.ifnames=0
+  initrd (loop)/live/initrd.img
 }
 
 ENDOFGRUB
