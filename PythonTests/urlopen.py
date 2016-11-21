@@ -2,16 +2,16 @@ import urllib.request as urlreq
 
 #def yoba():
 #    import httplib2
-#    http = httplib2.Http(proxy_info = httplib2.ProxyInfo(r'http://bsgv\ba003595:Go88Adventure@bsgv-ssmospiapi.bsgv.eu.isam.socgen:8080')
+#    http = httplib2.Http(proxy_info = httplib2.ProxyInfo(r'xxx:8080')
 
 
 def urlopen(url, headers = {}):
     from http.client import HTTPConnection as con
     con.debuglevel = 1
     proxy = urlreq.ProxyHandler({
-        'http' : r'http://bsgv\ba003595:XXX@bsgv-ssmospiapi.bsgv.eu.isam.socgen:8080',
-        'https' : r'https://bsgv\ba003595:XXX@bsgv-ssmospiapi.bsgv.eu.isam.socgen:8080',
-        'ftp' : r'ftp://bsgv\ba003595:XXX@bsgv-ssmospiapi.bsgv.eu.isam.socgen:8080'
+        'http' : r'xxx:8080',
+        'https' : r'xxx:8080',
+        'ftp' : r'xxx:8080'
         })
     auth = urlreq.HTTPBasicAuthHandler() # no need in this
     error = DefaultErrorHandler()
