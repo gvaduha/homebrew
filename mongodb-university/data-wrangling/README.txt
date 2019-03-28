@@ -1,1 +1,0 @@
-All example datasets could be downloaded at locations mentioned in Data_Wrangling_with_MongoDB_Udacity.html
