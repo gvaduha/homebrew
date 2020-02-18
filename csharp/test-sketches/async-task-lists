@@ -27,12 +27,21 @@ namespace gvaduha
         {
             _la = la.Select(x=> { x.id = id; return x; }).ToList();
         }
+        //public async Task<int> getSum()
+        //{
+        //    var results = new ConcurrentBag<int>();
+        //    var tasks = _la.Select(async x => results.Add(await x.getN()));
+        //    Console.WriteLine($"[{id}] Ready to start sum");
+        //    await Task.WhenAll(tasks.ToArray());
+        //    var res = results.Aggregate(0, (x, a) => a + x);
+        //    Console.WriteLine($"[{id}] > res={res}");
+        //    return res;
+        //}
         public async Task<int> getSum()
         {
-            var results = new ConcurrentBag<int>();
-            var tasks = _la.Select(async x => results.Add(await x.getN()));
+            var tasks = _la.Select(async x => await x.getN());
             Console.WriteLine($"[{id}] Ready to start sum");
-            await Task.WhenAll(tasks.ToArray());
+            var results = await Task.WhenAll(tasks.ToArray());
             var res = results.Aggregate(0, (x, a) => a + x);
             Console.WriteLine($"[{id}] > res={res}");
             return res;
