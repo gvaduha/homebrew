@@ -1,0 +1,84 @@
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace gvaduha
+{
+    class N
+    {
+        public string id;
+        Random r = new Random();
+        public async Task<int> getN()
+        {
+            var n = r.Next(1, 10);
+            Console.WriteLine($"[{id}] n={n}");
+            await Task.Delay(r.Next(1000,3000));
+            Console.WriteLine($"[{id}] n-go->{n}");
+            return n;
+        }
+    }
+    class Sum
+    {
+        string id = Guid.NewGuid().ToString().Substring(1,5);
+        List<N> _la;
+        public Sum(IEnumerable<N> la)
+        {
+            _la = la.Select(x=> { x.id = id; return x; }).ToList();
+        }
+        public async Task<int> getSum()
+        {
+            var results = new ConcurrentBag<int>();
+            var tasks = _la.Select(async x => results.Add(await x.getN()));
+            Console.WriteLine($"[{id}] Ready to start sum");
+            await Task.WhenAll(tasks.ToArray());
+            var res = results.Aggregate(0, (x, a) => a + x);
+            Console.WriteLine($"[{id}] > res={res}");
+            return res;
+        }
+    }
+
+    class L2Sum
+    {
+        List<Sum> _ls;
+        public L2Sum(IEnumerable<Sum> ls)
+        {
+            _ls = ls.ToList();
+        }
+        public async Task<int> getL2Sum()
+        {
+            var results = new ConcurrentBag<int>();
+            var tasks = _ls.Select(async x => results.Add(await x.getSum()));
+            Console.WriteLine("Ready to start L2 sum");
+            await Task.WhenAll(tasks.ToArray());
+            var res = results.Aggregate(0, (x, a) => a + x);
+            Console.WriteLine($">> L2res={res}");
+            return res;
+        }
+    }
+
+    class Program
+    {
+        static void Test1()
+        {
+            var ns = Enumerable.Range(0, 5).Select(_ => new N());
+            var res = new Sum(ns).getSum().Result;
+            Console.WriteLine($"*** Test#1 result: {res}");
+        }
+
+        static void Test2()
+        {
+            var ns = Enumerable.Range(0, 5).Select(_ => new N());
+            var ress = Enumerable.Range(0, 3).Select(_ => new Sum(ns));
+            var l2res = new L2Sum(ress).getL2Sum().Result;
+            Console.WriteLine($"*** Test#2 result: {l2res}");
+        }
+
+        static void Main(string[] args)
+        {
+            //Test1();
+            Test2();
+        }
+    }
+}
