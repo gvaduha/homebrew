@@ -1,5 +1,5 @@
 // Arguments:
-// 1 - exe image name of main application (i.e. InsuranceX.exe)
+// 1 - exe image name of main application (i.e. TestApp.exe)
 // 2 - IE + link to .application file of main application
 
 // TestApp "C:\Program Files\Internet Explorer\iexplore.exe" "http://server.com/dx/?application=TestApp"
