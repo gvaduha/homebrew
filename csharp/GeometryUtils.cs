@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 
-namespace Rusal.Emission.Framework
+namespace gvaduha.Framework
 {
     public class GeometryUtils
     {

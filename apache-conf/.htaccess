@@ -1,5 +1,0 @@
-Options +FollowSymLinks
-RewriteEngine On
-RewriteCond %{REQUEST_METHOD} ^(HEAD)
-RewriteCond %{REQUEST_URI} ^/[0-9a-zA-Z]+/SCRIPTS/.*$
-RewriteRule .* - [R=405]
